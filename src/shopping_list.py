@@ -1,3 +1,12 @@
+# shopping_list.py
+
+# This script is designed to house all the processing logic for generation of shopping lists within our program
+# (and handle errors as necessary).
+
+
+
+
+
 #compile_shopping_list — Complex (Denis)
 
 from typing import Dict, List, Tuple
@@ -47,7 +56,7 @@ def compile_shopping_list(
         raise TypeError("num_servings_dict must be a dict")
 
     def _simple_parse(line: str) -> Tuple[float, str, str]:
-        """Very small helper:
+        """Very small helper function.
         Tries formats like:
           - '2 cup tomato'
           - '3 cans beans'
@@ -127,8 +136,48 @@ def compile_shopping_list(
     return shopping
 
 
-# calculate_total_quantity - Medium (Matt)
 
+
+
+# calculate_total_quantity - Medium (Matt)
+def calculate_total_quantity(ingredient_entries: list[Dict[str, object]]) -> Dict[str, object]:
+    """Sums quantities for the same ingredient across multiple recipes. 
+    
+    Args:
+        ingredient_entries (list): List of ingredient dicts with 'quantity' and 'unit'
+        
+    Returns:
+        dict: {'quantity': float, 'unit': str}
+        
+    Example:
+        >>> entries = [
+        ...     {'quantity': 2, 'unit': 'cups'},
+        ...     {'quantity': 1, 'unit': 'cups'}
+        ... ]
+        >>> result = calculate_total_quantity(entries)
+        >>> result['quantity']
+        3.0
+    """
+    if not ingredient_entries:
+        return {'quantity': 0, 'unit': 'unknown'}
+    
+    # Uses first entry's unit as base
+    base_unit = ingredient_entries[0].get('unit', 'unknown')
+    total_quantity = 0.0
+    
+    for entry in ingredient_entries:
+        qty = entry.get('quantity', 0)
+        unit = entry.get('unit', base_unit)
+        if unit == base_unit:
+            total_quantity += qty
+        else:
+            # For now, just add them (we could call convert_units here once that's written)
+            total_quantity += qty
+    
+    return {
+        'quantity': round(total_quantity, 3),
+        'unit': base_unit
+    }
 
 # group_items_by_category
 
