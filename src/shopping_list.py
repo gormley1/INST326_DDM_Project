@@ -1,4 +1,4 @@
-#compile_shopping_list — Complex
+#compile_shopping_list — Complex (Denis)
 
 from typing import Dict, List, Tuple
 
@@ -125,3 +125,12 @@ def compile_shopping_list(
             pass
 
     return shopping
+
+
+# calculate_total_quantity - Medium (Matt)
+
+
+# group_items_by_category
+
+
+# validate_serving_size
