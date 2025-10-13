@@ -3,13 +3,13 @@
 # This script is designed to house all logic required to turn imported files into objects usable by 
 # other processing logic in the program (and handle errors up front as necessary).
 
+import os
+from typing import Dict, List
+import pdfplumber
 
 
 
 # validate_file_format- Simple (Denis)
-import os
-from typing import List
-
 def validate_file_format(filepath: str) -> bool:
     """Return True if the file path has a supported recipe extension.
 
@@ -24,7 +24,7 @@ def validate_file_format(filepath: str) -> bool:
     Raises:
         TypeError: If filepath is not a string.
 
-    Examples:
+    Example:
         >>> validate_file_format("recipe.txt")
         True
         >>> validate_file_format("image.jpg")
@@ -41,9 +41,7 @@ def validate_file_format(filepath: str) -> bool:
 
 
 
-# parse_recipe_file - Simple (Matt)
-import os
-
+# parse_recipe_file - Medium (Matt)
 def parse_recipe_file(filepath: str) -> Dict[str, object]:
     """Main entry point for imported files; auto-detects format and routes to corresponding function.
     
@@ -56,8 +54,13 @@ def parse_recipe_file(filepath: str) -> Dict[str, object]:
     Raises:
         FileNotFoundError: If the file does not exist.
         ValueError: If no content could be parsed, or unsupported file type.
+
+    Example:
+        >>> recipe = parse_recipe_file("test.txt")
+        >>> 'name' in recipe and 'ingredients' in recipe
+        True
     """
-    
+    validate_file_format(filepath)
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"Recipe file not found for path '{filepath}'.")
     file_type = os.path.splitext(filepath)[1].lower()
@@ -78,7 +81,7 @@ def parse_recipe_file(filepath: str) -> Dict[str, object]:
 # extract_ingredients_from_text - Medium (Darrell) 
     # Created as a helper to simplify the parse_x_recipe functions 
     # while also making debugging quicker & easier bc they all use the same logic for ingredient extraction.
-def extract_ingredients_from_text(text_block):
+def extract_ingredients_from_text(text_block) -> List[str]:
     """Extract ingredient lines from recipe text.
     
     Args:
@@ -87,9 +90,10 @@ def extract_ingredients_from_text(text_block):
     Returns:
         list: List of ingredient strings.
     
-    Examples:
+    Example:
         >>> text = "Ingredients:\\n- 2 cups flour\\n- 1 tsp salt"
-        >>> extract_ingredients_from_text(text)
+        >>> ingredients = extract_ingredients_from_text(text)
+        >>> print(ingredients)
         ['2 cups flour', '1 tsp salt']
     """
     if not text_block:
@@ -97,6 +101,7 @@ def extract_ingredients_from_text(text_block):
     
     lines = text_block.split('\n')
     ingredients = []
+    in_ingredients_section = False
     
     for line in lines:
         line = line.strip()
@@ -105,17 +110,28 @@ def extract_ingredients_from_text(text_block):
         if not line:
             continue
             
-        # Skip header lines
+        # Skip header lines, check for entering ingredients section
         lower_line = line.lower()
-        if 'ingredient' in lower_line or 'direction' in lower_line:
+        if 'ingredient' in lower_line: # removed -> or 'direction' in lower_line:
+            in_ingredients_section = True
             continue
+
+        # Check for leaving ingredients section (ex. if blank)
+        if 'direction' in lower_line or 'instruction' in lower_line:
+            in_ingredients_section = False
+            break
         
-        # Remove bullets and dashes at the start
-        if line.startswith(('-', '*', '•')):
-            line = line[1:].strip()
+        # Line processing if we're in ingredients section
+        if in_ingredients_section:
+            # Remove bullets and dashes at the start
+            clean_line = line
+            for bullet in ['-', '*', '•', '◦', '▪']:
+                if clean_line.startswith(bullet):
+                    clean_line = clean_line[1:].strip()
+                    break
         
-        # If line starts with a number, it's probably an ingredient
-        if line and (line[0].isdigit() or line.startswith(('-', '*', '•'))):
+        # If line starts with a number & has content, or is after 'ingredients', it's probably an ingredient
+        if clean_line and (clean_line[0].isdigit() or in_ingredients_section):
             ingredients.append(line)
     
     return ingredients
@@ -181,7 +197,14 @@ def parse_txt_recipe(filepath: str) -> Dict[str, object]:
     if ingredients_start != -1:
         end = directions_start - 1 if directions_start != -1 else len(lines)
         for ln in lines[ingredients_start:end]:
-            cleaned = ln.strip().lstrip("-*• ").strip()
+            # remove bullets
+            cleaned = ln.strip() # removed -> .lstrip("-*• ").strip()
+            # Matt added:
+            for bullet in ['-', '*', '•', '◦', '▪']:
+                if cleaned.startswith(bullet):
+                    cleaned = cleaned[1:].strip()
+                    break
+
             if cleaned and "ingredient" not in cleaned.lower():
                 ingredients.append(cleaned)
 
@@ -200,12 +223,8 @@ def parse_txt_recipe(filepath: str) -> Dict[str, object]:
 
 
 
-# parse_pdf_recipe - Medium (Matt)
+# parse_pdf_recipe - Complex (Matt)
     # largely based off Denis' parse_txt_recipe() function
-import os
-import pdfplumber 
-from typing import Dict
-
 def parse_pdf_recipe(filepath: str) -> Dict[str, object]:
     """Extract a very simple recipe structure from a .pdf file.
 
@@ -235,11 +254,14 @@ def parse_pdf_recipe(filepath: str) -> Dict[str, object]:
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"Recipe file not found: {filepath}")
 
-    with pdfplumber.open(filepath) as pdf:
-        full_text = '\n'.join([page.extract_text() or '' for page in pdf.pages])
+    try:
+        with pdfplumber.open(filepath) as pdf:
+            full_text = '\n'.join([page.extract_text() or '' for page in pdf.pages])
+    except Exception as e:
+        raise ValueError(f"Could not read PDF file: {e}")
 
     if not full_text.strip():
-        raise ValueError("Recipe file is empty")
+        raise ValueError("Recipe file is empty or content is unreadable")
 
     lines = [ln.strip() for ln in full_text.split("\n")]
     # Name: first non-empty line
@@ -260,7 +282,14 @@ def parse_pdf_recipe(filepath: str) -> Dict[str, object]:
     if ingredients_start != -1:
         end = directions_start - 1 if directions_start != -1 else len(lines)
         for ln in lines[ingredients_start:end]:
-            cleaned = ln.strip().lstrip("-*• ").strip()
+            # remove bullets
+            cleaned = ln.strip() # removed -> .lstrip("-*• ").strip()
+            # added:
+            for bullet in ['-', '*', '•', '◦', '▪']:
+                if cleaned.startswith(bullet):
+                    cleaned = cleaned[1:].strip()
+                    break
+
             if cleaned and "ingredient" not in cleaned.lower():
                 ingredients.append(cleaned)
 
