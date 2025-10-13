@@ -1,21 +1,60 @@
+# ingredient_processor.py
+from typing import Dict, Optional
+import re
+
+# convert_fraction - Matt (added as helper function to increase usability of parse_ingredient_line)
+def convert_fraction(frac_str: str) -> float:
+    """Helper function to convert fraction string to float. Handles '1/2', '2/5', etc."""
+    frac_str = frac_str.strip()
+
+    # check for a mixed number
+    if ' ' in frac_str:
+        parts = frac_str.split()
+        try:
+            whole = float(parts[0])
+            frac = parts[1].split('/')
+            return whole + float(frac[0]) / float(frac[1])
+        except (ValueError, IndexError, ZeroDivisionError):
+            return whole + 1 # should this be smth else?
+        
+    # check for simple fraction
+    if '/' in frac_str:
+        try:
+            frac = frac_str.split('/')
+            return float(frac[0]) / float(frac[1])
+        except (ValueError, IndexError, ZeroDivisionError):
+            return 1.0
+        
+    # regular number
+    try:
+        return float(frac_str)
+    except ValueError:
+        return 1.0
+
+
 # parse_ingredient_line - Darrell
-def parse_ingredient_line(ingredient_string):
+def parse_ingredient_line(ingredient_string: str) -> Dict[str, object]:
     """Break down ingredient string into parts.
-    
+    Handles fractions like "1 1/2" or "2/5".
+
     Args:
         ingredient_string (str): Single ingredient (e.g., "2 cups flour").
     
     Returns:
-        dict: {'quantity': float, 'unit': str, 'item': str, 'preparation': None}
+        dict: {'quantity': float, 'unit': str, 'item': str, 'preparation': str or None}
     
     Examples:
         >>> parse_ingredient_line("2 cups flour")
         {'quantity': 2.0, 'unit': 'cups', 'item': 'flour', 'preparation': None}
+        >>> parse_ingredient_line("1 1/2 tsp vanilla")['quantity']
+        1.5
     """
-    if not ingredient_string:
+    if not ingredient_string or not isinstance(ingredient_string, str):
         return {'quantity': 0.0, 'unit': 'each', 'item': '', 'preparation': None}
     
-    parts = ingredient_string.strip().split()
+    # Cleaning string
+    ingredient_string = ingredient_string.strip()
+    parts = ingredient_string.split()
     
     # Default values
     quantity = 1.0
@@ -23,19 +62,46 @@ def parse_ingredient_line(ingredient_string):
     item = ingredient_string
     preparation = None
     
-    # Try to get quantity from first part
+    # Try to get quantity from first part (may be a fraction)
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if len(parts) > 0:
-        try:
-            quantity = float(parts[0])
+        # check for if first part is number or fraction
+        first_part = parts[0]
+
+        # mixed number handling
+        if len(parts) >= 2 and '/' in parts[1]:
+            try:
+                quantity = convert_fraction(f"{parts[0]} {parts[1]}")
+                # If we have at least 4 parts: quantity fraction unit item
+                if len(parts) >= 4:
+                    unit = parts[2].lower()
+                    item = ' '.join(parts[3:])
+                # If we have 3 parts: quantity fraction item (bc of '/')
+                elif len(parts) == 3:
+                    item = parts[2]
+                # If not, just the fraction
+                else:
+                    item = ' '.join(parts[2:]) if len(parts) > 2 else ''
+            except:
+                item = ingredient_string
+
+            # otherwise it's a regular number, OR a simple fraction
+        elif '/' in first_part or first_part.replace('.', '').isdigit():
+            try:
+                quantity = convert_fraction(first_part) # float(parts[0])
             
-            # If we have at least 3 parts: quantity unit item
-            if len(parts) >= 3:
-                unit = parts[1].lower()
-                item = ' '.join(parts[2:])
-            # If we have 2 parts: quantity item
-            elif len(parts) == 2:
-                item = parts[1]
-        except ValueError:
+                # If we have at least 3 parts: quantity unit item
+                if len(parts) >= 3:
+                    unit = parts[1].lower()
+                    item = ' '.join(parts[2:])
+                # If we have 2 parts: quantity item
+                elif len(parts) == 2:
+                    item = parts[1]
+                else:
+                    item = ''
+            except: #ValueError:
+                item = ingredient_string
+        else:
             # First part is not a number, treat whole thing as item
             item = ingredient_string
     
@@ -58,7 +124,7 @@ def parse_ingredient_line(ingredient_string):
 
 
 
-# normalize_ingredient_name — Other (Medium): Denis
+# normalize_ingredient_name — Medium (Denis)
 from typing import Dict
 
 def normalize_ingredient_name(raw_ingredient: str) -> str:
@@ -88,7 +154,7 @@ def normalize_ingredient_name(raw_ingredient: str) -> str:
 
     name = raw_ingredient.strip().lower()
 
-    remove_words = ["fresh", "organic", "ripe", "kosher", "sea", "extra", "virgin", "raw", "whole"]
+    remove_words = ["fresh", "organic", "ripe", "kosher", "sea", "extra", "virgin", "raw", "whole", "large", "small", "medium"]
     for w in remove_words:
         name = name.replace(w, "")
     name = " ".join(name.split())  # collapse spaces
@@ -98,13 +164,15 @@ def normalize_ingredient_name(raw_ingredient: str) -> str:
         "spring onion": "scallion",
         "cilantro": "coriander",
         "roma tomato": "tomato",
-        "plum tomato": "tomato"
+        "plum tomato": "tomato", 
+        "beefsteak tomato": "tomato"
     }
     if name in synonyms:
         name = synonyms[name]
 
     # very naive plural fixer
-    if len(name) > 3 and name.endswith("s"):
+    if len(name) > 3 and name.endswith("s") and not name.endswith("ss"):
+        # this way we don't change things like 'lemongrass' or 'bass'
         name = name[:-1]
 
     return name.strip()
