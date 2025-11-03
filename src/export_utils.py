@@ -2,6 +2,12 @@
 
 # export_to_pdf
 
+# other export formats???
+
+# group_items_by_category
+
+
+
 # format_shopping_list_display - (Matt)
 def format_shopping_list_display(shopping: dict) -> str:
     """ Formats input shopping list as a readable string for console/text output.
@@ -53,3 +59,4 @@ def format_shopping_list_display(shopping: dict) -> str:
         # this should include state sales tax eventually
 
     return grocery_list
+
