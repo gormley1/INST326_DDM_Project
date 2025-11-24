@@ -1,328 +1,289 @@
-# recipe_parser.py
+"""
+Recipe Parser Inheritance Hierarchy
+INST326 - Fall 2025
+Team Member: Darrell Cox - Documentation Lead
 
-# This script is designed to house all logic required to turn imported files into objects usable by 
-# other processing logic in the program (and handle errors up front as necessary).
+Implements an inheritance hierarchy for parsing recipes from different file formats.
+Supports .txt, .pdf, .docx formats with unified ingredient extraction and structure.
+"""
 
 import os
+import re
+from abc import ABC, abstractmethod
 from typing import Dict, List
-import pdfplumber
+import PyPDF2  # Must be installed
+# python-docx imported lazily inside DOCX parser
 
 
+# ======================================================================
+#                           BASE CLASS
+# ======================================================================
 
-# validate_file_format- Simple (Denis)
-def validate_file_format(filepath: str) -> bool:
-    """Return True if the file path has a supported recipe extension.
+class RecipeParser(ABC):
+    """Abstract base class for all recipe parsers."""
 
-    Supported extensions: .txt, .docx, .pdf
+    def __init__(self, filepath: str):
+        self.filepath = filepath
+        self.recipe_data = {}
 
-    Args:
-        filepath (str): Full or relative path to a file.
+    @abstractmethod
+    def parse(self) -> Dict:
+        """Parse the file into structured recipe data."""
+        pass
 
-    Returns:
-        bool: True if supported; False otherwise.
+    @abstractmethod
+    def validate_format(self) -> bool:
+        """Check if the file exists and is the expected format."""
+        pass
 
-    Raises:
-        TypeError: If filepath is not a string.
+    # ---------- Shared Ingredient Parsing Utilities ----------
 
-    Example:
-        >>> validate_file_format("recipe.txt")
-        True
-        >>> validate_file_format("image.jpg")
-        False
-    """
-    if not isinstance(filepath, str):
-        raise TypeError("filepath must be a string")
+    def extract_ingredients_section(self, text: str) -> List[str]:
+        """
+        Extract ingredient lines located between 'Ingredients:' and 'Directions:'.
+        """
+        lines = text.split("\n")
+        ingredients = []
+        in_section = False
 
-    supported: List[str] = [".txt", ".docx", ".pdf"]
-    _, ext = os.path.splitext(filepath)
-    return ext.lower() in supported
+        for line in lines:
+            clean = line.strip()
 
+            if re.match(r"^ingredients?:?$", clean, re.IGNORECASE):
+                in_section = True
+                continue
 
+            if re.match(r"^(directions?|instructions?|steps?):?$", clean, re.IGNORECASE):
+                break
 
+            if in_section and clean:
+                clean = re.sub(r"^[\-•*]\s*", "", clean)
+                ingredients.append(clean)
 
+        return ingredients
 
-# parse_recipe_file - Medium (Matt)
-def parse_recipe_file(filepath: str) -> Dict[str, object]:
-    """Main entry point for imported files; auto-detects format and routes to corresponding function.
-    
-    Args:
-        filepath (str): Path to a file (MUST be str).
+    def clean_ingredient_text(self, text: str) -> str:
+        """Remove bullet characters & trim whitespace."""
+        text = re.sub(r"^[\-•*◦▪▫→]\s*", "", text)
+        return " ".join(text.split()).strip()
 
-    Returns:
-        output of corresponding parse_?_recipe(filepath) function matching input file type.    
-    
-    Raises:
-        FileNotFoundError: If the file does not exist.
-        ValueError: If no content could be parsed, or unsupported file type.
+    # ---------- Convenience Accessors ----------
 
-    Example:
-        >>> recipe = parse_recipe_file("test.txt")
-        >>> 'name' in recipe and 'ingredients' in recipe
-        True
-    """
-    validate_file_format(filepath)
-    if not os.path.exists(filepath):
-        raise FileNotFoundError(f"Recipe file not found for path '{filepath}'.")
-    file_type = os.path.splitext(filepath)[1].lower()
-    if file_type == '.txt':
-        return parse_txt_recipe(filepath)
-    # CONDITIONAL FOR .DOCX PARSE: uncomment when function is completed
-    #elif file_type == '.docx':
-        #return parse_docx_recipe(filepath)
-    elif file_type == '.pdf':
-        return parse_pdf_recipe(filepath)
-    else:
-        raise ValueError(f"Unsupported file format: {file_type}")
-    
+    def get_recipe_name(self) -> str:
+        return self.recipe_data.get("name", "Untitled Recipe")
+
+    def get_ingredients(self) -> List[str]:
+        return self.recipe_data.get("ingredients", [])
 
 
+# ======================================================================
+#                         TXT PARSER
+# ======================================================================
+
+class TXTRecipeParser(RecipeParser):
+
+    def validate_format(self) -> bool:
+        return self.filepath.endswith(".txt") and os.path.isfile(self.filepath)
+
+    def parse(self) -> Dict:
+        if not self.validate_format():
+            raise ValueError(f"Invalid TXT file: {self.filepath}")
+
+        with open(self.filepath, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        lines = content.split("\n")
+        name = lines[0].strip() if lines else "Untitled Recipe"
+
+        ingredients = [self.clean_ingredient_text(i)
+                       for i in self.extract_ingredients_section(content)]
+
+        # Directions extraction
+        directions = []
+        in_directions = False
+        for line in lines:
+            line_clean = line.strip()
+            if re.match(r"^(directions?|instructions?|steps?):?$", line_clean, re.IGNORECASE):
+                in_directions = True
+                continue
+            if in_directions and line_clean:
+                directions.append(line_clean)
+
+        self.recipe_data = {
+            "name": name,
+            "ingredients": ingredients,
+            "directions": directions,
+            "source_file": self.filepath,
+            "format": "txt",
+        }
+
+        return self.recipe_data
 
 
-# extract_ingredients_from_text - Medium (Darrell) 
-    # Created as a helper to simplify the parse_x_recipe functions 
-    # while also making debugging quicker & easier bc they all use the same logic for ingredient extraction.
-def extract_ingredients_from_text(text_block) -> List[str]:
-    """Extract ingredient lines from recipe text.
-    
-    Args:
-        text_block (str): Recipe text containing ingredients.
-    
-    Returns:
-        list: List of ingredient strings.
-    
-    Example:
-        >>> text = "Ingredients:\\n- 2 cups flour\\n- 1 tsp salt"
-        >>> ingredients = extract_ingredients_from_text(text)
-        >>> print(ingredients)
-        ['2 cups flour', '1 tsp salt']
-    """
-    if not text_block:
-        return []
-    
-    lines = text_block.split('\n')
-    ingredients = []
-    in_ingredients_section = False
-    
-    for line in lines:
-        line = line.strip()
-        
-        # Skip empty lines
-        if not line:
+# ======================================================================
+#                         PDF PARSER
+# ======================================================================
+
+class PDFRecipeParser(RecipeParser):
+
+    def validate_format(self) -> bool:
+        if not self.filepath.endswith(".pdf") or not os.path.isfile(self.filepath):
+            return False
+        try:
+            with open(self.filepath, "rb") as f:
+                PyPDF2.PdfReader(f)
+            return True
+        except Exception:
+            return False
+
+    def parse(self) -> Dict:
+        if not self.validate_format():
+            raise ValueError(f"Invalid PDF file: {self.filepath}")
+
+        full_text = ""
+
+        with open(self.filepath, "rb") as f:
+            reader = PyPDF2.PdfReader(f)
+            for page in reader.pages:
+                txt = page.extract_text()
+                if txt:
+                    full_text += txt + "\n"
+
+        lines = [l.strip() for l in full_text.split("\n") if l.strip()]
+        name = lines[0] if lines else "Untitled Recipe"
+
+        ingredients = [self.clean_ingredient_text(i)
+                       for i in self.extract_ingredients_section(full_text)]
+
+        # Directions
+        directions = []
+        in_directions = False
+        for line in lines:
+            if re.match(r"^(directions?|instructions?|steps?):?$", line, re.IGNORECASE):
+                in_directions = True
+                continue
+            if in_directions:
+                directions.append(line)
+
+        self.recipe_data = {
+            "name": name,
+            "ingredients": ingredients,
+            "directions": directions,
+            "source_file": self.filepath,
+            "format": "pdf",
+        }
+
+        return self.recipe_data
+
+
+# ======================================================================
+#                         DOCX PARSER
+# ======================================================================
+
+class DOCXRecipeParser(RecipeParser):
+
+    def validate_format(self) -> bool:
+        if not self.filepath.endswith(".docx") or not os.path.isfile(self.filepath):
+            return False
+        try:
+            from docx import Document
+            Document(self.filepath)
+            return True
+        except Exception:
+            return False
+
+    def parse(self) -> Dict:
+        if not self.validate_format():
+            raise ValueError(f"Invalid DOCX file: {self.filepath}")
+
+        from docx import Document
+        doc = Document(self.filepath)
+
+        full_text = "\n".join([p.text for p in doc.paragraphs])
+
+        name = doc.paragraphs[0].text.strip() if doc.paragraphs else "Untitled Recipe"
+
+        ingredients = [self.clean_ingredient_text(i)
+                       for i in self.extract_ingredients_section(full_text)]
+
+        # Directions
+        lines = full_text.split("\n")
+        directions = []
+        in_directions = False
+        for line in lines:
+            clean = line.strip()
+            if re.match(r"^(directions?|instructions?|steps?):?$", clean, re.IGNORECASE):
+                in_directions = True
+                continue
+            if in_directions and clean:
+                directions.append(clean)
+
+        self.recipe_data = {
+            "name": name,
+            "ingredients": ingredients,
+            "directions": directions,
+            "source_file": self.filepath,
+            "format": "docx",
+        }
+
+        return self.recipe_data
+
+
+# ======================================================================
+#                        DEMO / MAIN USAGE
+# ======================================================================
+
+def demo_recipe_parsers():
+    """Showcase all parser types working with inheritance & polymorphism."""
+
+    print("=== Demo: TXT Parser ===")
+    txt = TXTRecipeParser("data/sample_recipes/pasta_marinara.txt")
+    if txt.validate_format():
+        r = txt.parse()
+        print("Parsed:", r["name"])
+
+    print("\n=== Demo: PDF Parser ===")
+    pdf = PDFRecipeParser("data/sample_recipes/chicken_stir_fry.pdf")
+    if pdf.validate_format():
+        r = pdf.parse()
+        print("Parsed:", r["name"])
+
+    print("\n=== Polymorphism Demo ===")
+    for parser in [txt, pdf]:
+        print(f"{parser.get_recipe_name()} ({parser.recipe_data.get('format')})")
+
+
+def usage_in_main_project():
+    """Example how the main DDM grocery system could consume the parsers."""
+    print("\n=== Integration Example ===")
+
+    recipe_files = [
+        "data/sample_recipes/pasta_marinara.txt",
+        "data/sample_recipes/chicken_stir_fry.pdf",
+    ]
+
+    recipes = []
+
+    for filepath in recipe_files:
+        if filepath.endswith(".txt"):
+            parser = TXTRecipeParser(filepath)
+        elif filepath.endswith(".pdf"):
+            parser = PDFRecipeParser(filepath)
+        elif filepath.endswith(".docx"):
+            parser = DOCXRecipeParser(filepath)
+        else:
+            print("Unsupported format:", filepath)
             continue
-            
-        # Skip header lines, check for entering ingredients section
-        lower_line = line.lower()
-        if 'ingredient' in lower_line: # removed -> or 'direction' in lower_line:
-            in_ingredients_section = True
-            continue
 
-        # Check for leaving ingredients section (ex. if blank)
-        if 'direction' in lower_line or 'instruction' in lower_line:
-            in_ingredients_section = False
-            break
-        
-        # Line processing if we're in ingredients section
-        if in_ingredients_section:
-            # Remove bullets and dashes at the start
-            clean_line = line
-            for bullet in ['-', '*', '•', '◦', '▪']:
-                if clean_line.startswith(bullet):
-                    clean_line = clean_line[1:].strip()
-                    break
-        
-        # If line starts with a number & has content, or is after 'ingredients', it's probably an ingredient
-        if clean_line and (clean_line[0].isdigit() or in_ingredients_section):
-            ingredients.append(line)
-    
-    return ingredients
-    
+        if parser.validate_format():
+            recipes.append(parser.parse())
+            print("✓ Parsed:", parser.get_recipe_name())
+        else:
+            print("✗ Failed:", filepath)
+
+    print("\nTotal Recipes:", len(recipes))
 
 
-
-
-#parse_txt_recipe — Medium (Denis)
-from typing import Dict
-
-def parse_txt_recipe(filepath: str) -> Dict[str, object]:
-    """Extract a very simple recipe structure from a plain .txt file.
-
-    Expected shape:
-        - First non-empty line = recipe name
-        - A section that includes 'ingredients' (case-insensitive)
-        - A section that includes 'directions' or 'instructions'
-
-    Args:
-        filepath (str): Path to a .txt file.
-
-    Returns:
-        dict: {'name': str, 'ingredients': list[str], 'directions': str}
-
-    Raises:
-        FileNotFoundError: If the file does not exist.
-        ValueError: If no content could be parsed.
-
-    Examples:
-        >>> data = parse_txt_recipe("pasta.txt")
-        >>> isinstance(data["ingredients"], list)
-        True
-    """
-    if not isinstance(filepath, str):
-        raise TypeError("filepath must be a string")
-
-    if not os.path.exists(filepath):
-        raise FileNotFoundError(f"Recipe file not found: {filepath}")
-
-    with open(filepath, "r", encoding="utf-8") as f:
-        content = f.read()
-
-    if not content.strip():
-        raise ValueError("Recipe file is empty")
-
-    lines = [ln.strip() for ln in content.split("\n")]
-    # Name: first non-empty line
-    name = next((ln for ln in lines if ln), "Untitled Recipe")
-
-    # Find section starts
-    ingredients_start = -1
-    directions_start = -1
-    for i, ln in enumerate(lines):
-        low = ln.lower()
-        if "ingredient" in low and ingredients_start == -1:
-            ingredients_start = i + 1
-        if ("direction" in low or "instruction" in low) and directions_start == -1:
-            directions_start = i + 1
-
-    # Gather ingredients
-    ingredients: list[str] = []
-    if ingredients_start != -1:
-        end = directions_start - 1 if directions_start != -1 else len(lines)
-        for ln in lines[ingredients_start:end]:
-            # remove bullets
-            cleaned = ln.strip() # removed -> .lstrip("-*• ").strip()
-            # Matt added:
-            for bullet in ['-', '*', '•', '◦', '▪']:
-                if cleaned.startswith(bullet):
-                    cleaned = cleaned[1:].strip()
-                    break
-
-            if cleaned and "ingredient" not in cleaned.lower():
-                ingredients.append(cleaned)
-
-    # Gather directions
-    directions = ""
-    if directions_start != -1:
-        directions = "\n".join(lines[directions_start:]).strip()
-
-    return {
-        "name": name,
-        "ingredients": ingredients,
-        "directions": directions
-    }
-
-
-
-
-
-# parse_pdf_recipe - Complex (Matt)
-    # largely based off Denis' parse_txt_recipe() function
-def parse_pdf_recipe(filepath: str) -> Dict[str, object]:
-    """Extract a very simple recipe structure from a .pdf file.
-
-    Expected shape:
-        - First non-empty line = recipe name
-        - A section that includes 'ingredients' (case-insensitive)
-        - A section that includes 'directions' or 'instructions'
-
-    Args:
-        filepath (str): Path to a .pdf file.
-
-    Returns:
-        dict: {'name': str, 'ingredients': list[str], 'directions': str}
-
-    Raises:
-        FileNotFoundError: If the file does not exist.
-        ValueError: If no content could be parsed.
-
-    Examples:
-        >>> data = parse_pdf_recipe("chicken.pdf")
-        >>> isinstance(data["ingredients"], list)
-        True
-    """
-    if not isinstance(filepath, str):
-        raise TypeError("filepath must be a string")
-
-    if not os.path.exists(filepath):
-        raise FileNotFoundError(f"Recipe file not found: {filepath}")
-
-    try:
-        with pdfplumber.open(filepath) as pdf:
-            full_text = '\n'.join([page.extract_text() or '' for page in pdf.pages])
-    except Exception as e:
-        raise ValueError(f"Could not read PDF file: {e}")
-
-    if not full_text.strip():
-        raise ValueError("Recipe file is empty or content is unreadable")
-
-    lines = [ln.strip() for ln in full_text.split("\n")]
-    # Name: first non-empty line
-    name = next((ln for ln in lines if ln), "Untitled Recipe")
-
-    # Find section starts
-    ingredients_start = -1
-    directions_start = -1
-    for i, ln in enumerate(lines):
-        low = ln.lower()
-        if "ingredient" in low and ingredients_start == -1:
-            ingredients_start = i + 1
-        if ("direction" in low or "instruction" in low) and directions_start == -1:
-            directions_start = i + 1
-
-    # Gather ingredients
-    ingredients: list[str] = []
-    if ingredients_start != -1:
-        end = directions_start - 1 if directions_start != -1 else len(lines)
-        for ln in lines[ingredients_start:end]:
-            # remove bullets
-            cleaned = ln.strip() # removed -> .lstrip("-*• ").strip()
-            # added:
-            for bullet in ['-', '*', '•', '◦', '▪']:
-                if cleaned.startswith(bullet):
-                    cleaned = cleaned[1:].strip()
-                    break
-
-            if cleaned and "ingredient" not in cleaned.lower():
-                ingredients.append(cleaned)
-
-    # Gather directions
-    directions = ""
-    if directions_start != -1:
-        directions = "\n".join(lines[directions_start:]).strip()
-
-    return {
-        "name": name,
-        "ingredients": ingredients,
-        "directions": directions
-    }
-
-
-
-
-
-# parse_docx_recipe NOT CLAIMED OR COMPLETED YET
-
-
-
-
-
-# as we expand towards supporting other file types beyond .pdf, .docx, .txt, etc 
-# (I was thinking .md, complete file support for everything exportable from Apple Notes + Files + other "competitor" apps 
-# in the same space as us like ReciMe), we can write those parse_x_recipe() functions below here.
-
-
-
-# FUTURE DEV SPACE: WORK IN PROGRESS BELOW
-
-
-
-
-
+if __name__ == "__main__":
+    demo_recipe_parsers()
+    usage_in_main_project()
