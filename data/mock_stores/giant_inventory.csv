@@ -1,0 +1,139 @@
+store_name,item_name,brand,package_size,unit,price,category,date_checked
+giant,milk,Giant Brand,1,gallon,3.79,dairy,2025-01-15
+giant,milk,Organic Valley,0.5,gallon,4.29,dairy,2025-01-15
+giant,eggs,Giant Brand,12,count,4.29,dairy,2025-01-15
+giant,eggs,Eggland's Best,18,count,6.79,dairy,2025-01-15
+giant,butter,Land O'Lakes,1,lb,5.79,dairy,2025-01-15
+giant,cheese,Tillamook Cheddar,8,oz,4.79,dairy,2025-01-15
+giant,yogurt,Chobani Greek,32,oz,5.29,dairy,2025-01-15
+giant,sour cream,Daisy,16,oz,3.19,dairy,2025-01-15
+giant,cream cheese,Philadelphia,8,oz,3.29,dairy,2025-01-15
+giant,bread,Giant Whole Wheat,24,oz,3.79,bakery,2025-01-15
+giant,bagels,Thomas',6,count,3.29,bakery,2025-01-15
+giant,tortillas,Mission Flour,10,count,2.79,bakery,2025-01-15
+giant,croissants,Giant Bakery,6,count,4.79,bakery,2025-01-15
+giant,tomato,Organic,1,lb,2.79,produce,2025-01-15
+giant,tomatoes,Roma,1,lb,1.89,produce,2025-01-15
+giant,onion,Yellow,1,lb,1.19,produce,2025-01-15
+giant,onions,Red,1,lb,1.39,produce,2025-01-15
+giant,garlic,Whole Bulb,1,each,0.69,produce,2025-01-15
+giant,potato,Russet,5,lb,4.79,produce,2025-01-15
+giant,potatoes,Red,3,lb,3.79,produce,2025-01-15
+giant,carrot,Organic Baby,1,lb,2.39,produce,2025-01-15
+giant,carrots,Regular,2,lb,2.79,produce,2025-01-15
+giant,celery,Organic,1,bunch,2.39,produce,2025-01-15
+giant,lettuce,Romaine,1,head,2.79,produce,2025-01-15
+giant,spinach,Baby Spinach,10,oz,3.29,produce,2025-01-15
+giant,cucumber,English,1,each,1.89,produce,2025-01-15
+giant,bell pepper,Red,1,each,1.89,produce,2025-01-15
+giant,bell pepper,Green,1,each,1.39,produce,2025-01-15
+giant,broccoli,Fresh,1,lb,2.39,produce,2025-01-15
+giant,cauliflower,Fresh,1,head,3.79,produce,2025-01-15
+giant,mushroom,White Button,8,oz,2.89,produce,2025-01-15
+giant,mushrooms,Portobello,6,oz,3.79,produce,2025-01-15
+giant,avocado,Hass,1,each,1.39,produce,2025-01-15
+giant,lemon,Fresh,1,each,0.69,produce,2025-01-15
+giant,lime,Fresh,1,each,0.49,produce,2025-01-15
+giant,apple,Honeycrisp,1,lb,2.89,produce,2025-01-15
+giant,apples,Gala,3,lb,4.79,produce,2025-01-15
+giant,banana,Organic,1,lb,0.69,produce,2025-01-15
+giant,bananas,Regular,1,lb,0.49,produce,2025-01-15
+giant,orange,Navel,1,lb,1.39,produce,2025-01-15
+giant,strawberries,Fresh,1,lb,4.79,produce,2025-01-15
+giant,blueberries,Fresh,6,oz,3.79,produce,2025-01-15
+giant,grapes,Red Seedless,2,lb,5.79,produce,2025-01-15
+giant,chicken breast,Boneless Skinless,1,lb,4.79,meat,2025-01-15
+giant,chicken thighs,Bone-in,1,lb,2.79,meat,2025-01-15
+giant,ground beef,85% Lean,1,lb,5.79,meat,2025-01-15
+giant,ground beef,93% Lean,1,lb,6.79,meat,2025-01-15
+giant,pork chops,Bone-in,1,lb,4.29,meat,2025-01-15
+giant,bacon,Oscar Mayer,16,oz,7.79,meat,2025-01-15
+giant,sausage,Jimmy Dean,16,oz,5.79,meat,2025-01-15
+giant,salmon,Atlantic Fillet,1,lb,12.79,seafood,2025-01-15
+giant,shrimp,Peeled Deveined,1,lb,9.79,seafood,2025-01-15
+giant,tilapia,Frozen Fillet,1,lb,6.79,seafood,2025-01-15
+giant,flour,Gold Medal All-Purpose,5,lb,4.79,baking,2025-01-15
+giant,sugar,C&H Granulated,4,lb,3.79,baking,2025-01-15
+giant,brown sugar,C&H Light,2,lb,3.29,baking,2025-01-15
+giant,baking powder,Clabber Girl,8.1,oz,2.39,baking,2025-01-15
+giant,baking soda,Arm & Hammer,1,lb,1.89,baking,2025-01-15
+giant,vanilla extract,McCormick Pure,2,oz,7.79,baking,2025-01-15
+giant,cocoa powder,Hershey's,8,oz,4.79,baking,2025-01-15
+giant,chocolate chips,Nestle Toll House,12,oz,3.79,baking,2025-01-15
+giant,yeast,Fleischmann's Active Dry,0.75,oz,4.79,baking,2025-01-15
+giant,pasta,Barilla Spaghetti,16,oz,1.89,pasta,2025-01-15
+giant,pasta,Barilla Penne,16,oz,1.89,pasta,2025-01-15
+giant,rice,Lundberg White,2,lb,4.79,grains,2025-01-15
+giant,rice,Uncle Ben's Brown,2,lb,3.79,grains,2025-01-15
+giant,quinoa,Bob's Red Mill,16,oz,5.79,grains,2025-01-15
+giant,oats,Quaker Old Fashioned,42,oz,5.79,grains,2025-01-15
+giant,tomato paste,Contadina,6,oz,0.79,canned goods,2025-01-15
+giant,tomato sauce,Hunt's,15,oz,1.19,canned goods,2025-01-15
+giant,diced tomatoes,Hunt's,14.5,oz,1.39,canned goods,2025-01-15
+giant,crushed tomatoes,Cento,28,oz,2.89,canned goods,2025-01-15
+giant,black beans,Bush's Best,15,oz,1.39,canned goods,2025-01-15
+giant,kidney beans,Bush's Best,15,oz,1.39,canned goods,2025-01-15
+giant,chickpeas,Bush's Best,15,oz,1.39,canned goods,2025-01-15
+giant,corn,Del Monte Whole Kernel,15.25,oz,1.19,canned goods,2025-01-15
+giant,green beans,Del Monte Cut,14.5,oz,1.19,canned goods,2025-01-15
+giant,chicken broth,Swanson,32,oz,2.89,canned goods,2025-01-15
+giant,beef broth,Swanson,32,oz,2.89,canned goods,2025-01-15
+giant,vegetable broth,Pacific Foods,32,oz,3.39,canned goods,2025-01-15
+giant,coconut milk,Thai Kitchen,13.66,oz,2.39,canned goods,2025-01-15
+giant,tuna,StarKist Chunk Light,5,oz,1.39,canned goods,2025-01-15
+giant,olive oil,Bertolli Extra Virgin,25.5,oz,9.79,oils,2025-01-15
+giant,vegetable oil,Wesson,48,oz,6.79,oils,2025-01-15
+giant,canola oil,Crisco,48,oz,7.79,oils,2025-01-15
+giant,cooking spray,Pam Original,6,oz,3.79,oils,2025-01-15
+giant,salt,Morton Iodized,26,oz,1.39,spices,2025-01-15
+giant,black pepper,McCormick Ground,3,oz,5.79,spices,2025-01-15
+giant,garlic powder,McCormick,3.12,oz,4.79,spices,2025-01-15
+giant,onion powder,McCormick,2.62,oz,4.79,spices,2025-01-15
+giant,paprika,McCormick,2.12,oz,4.79,spices,2025-01-15
+giant,cumin,McCormick Ground,1.5,oz,5.29,spices,2025-01-15
+giant,oregano,McCormick,0.75,oz,4.79,spices,2025-01-15
+giant,basil,McCormick,0.62,oz,4.79,spices,2025-01-15
+giant,thyme,McCormick,0.7,oz,4.79,spices,2025-01-15
+giant,cinnamon,McCormick Ground,2.37,oz,5.79,spices,2025-01-15
+giant,chili powder,McCormick,2.5,oz,5.29,spices,2025-01-15
+giant,red pepper flakes,McCormick,1.5,oz,4.79,spices,2025-01-15
+giant,italian seasoning,McCormick,0.75,oz,4.79,spices,2025-01-15
+giant,bay leaves,McCormick,0.12,oz,3.79,spices,2025-01-15
+giant,soy sauce,Kikkoman,15,oz,3.79,condiments,2025-01-15
+giant,worcestershire sauce,Lea & Perrins,10,oz,4.79,condiments,2025-01-15
+giant,hot sauce,Frank's RedHot,12,oz,3.29,condiments,2025-01-15
+giant,ketchup,Heinz,32,oz,3.79,condiments,2025-01-15
+giant,mustard,French's Yellow,14,oz,2.39,condiments,2025-01-15
+giant,mayonnaise,Best Foods,30,oz,5.79,condiments,2025-01-15
+giant,bbq sauce,Sweet Baby Ray's,18,oz,2.79,condiments,2025-01-15
+giant,salsa,Pace Picante,16,oz,3.29,condiments,2025-01-15
+giant,ranch dressing,Hidden Valley,16,oz,4.79,condiments,2025-01-15
+giant,italian dressing,Wish-Bone,15,oz,3.79,condiments,2025-01-15
+giant,peanut butter,Jif Creamy,40,oz,6.79,spreads,2025-01-15
+giant,jelly,Smucker's Strawberry,18,oz,3.79,spreads,2025-01-15
+giant,honey,Nature Nate's,32,oz,9.79,spreads,2025-01-15
+giant,maple syrup,Log Cabin,24,oz,5.79,breakfast,2025-01-15
+giant,pancake mix,Aunt Jemima,32,oz,4.29,breakfast,2025-01-15
+giant,cereal,Cheerios,18,oz,4.79,breakfast,2025-01-15
+giant,cereal,Frosted Flakes,24,oz,5.29,breakfast,2025-01-15
+giant,granola,Bear Naked,12,oz,5.79,breakfast,2025-01-15
+giant,coffee,Peet's Ground,12,oz,8.79,beverages,2025-01-15
+giant,tea,Lipton Black,100,count,5.79,beverages,2025-01-15
+giant,orange juice,Tropicana,52,oz,4.79,beverages,2025-01-15
+giant,apple juice,Mott's,64,oz,3.79,beverages,2025-01-15
+giant,soda,Coca-Cola,12,count,6.79,beverages,2025-01-15
+giant,sparkling water,La Croix,12,count,5.79,beverages,2025-01-15
+giant,water,Arrowhead,24,count,5.79,beverages,2025-01-15
+giant,ice cream,Ben & Jerry's,16,oz,5.29,frozen,2025-01-15
+giant,frozen pizza,DiGiorno,27.5,oz,7.79,frozen,2025-01-15
+giant,frozen vegetables,Birds Eye Mixed,16,oz,2.79,frozen,2025-01-15
+giant,frozen french fries,Ore-Ida,28,oz,3.79,frozen,2025-01-15
+giant,waffles,Eggo,24,count,4.79,frozen,2025-01-15
+giant,chips,Lay's Classic,13,oz,4.79,snacks,2025-01-15
+giant,pretzels,Snyder's,16,oz,3.79,snacks,2025-01-15
+giant,crackers,Ritz,13.7,oz,4.29,snacks,2025-01-15
+giant,cookies,Oreo,14.3,oz,4.79,snacks,2025-01-15
+giant,popcorn,Pop Secret,6,count,4.29,snacks,2025-01-15
+giant,nuts,Planters Peanuts,16,oz,6.79,snacks,2025-01-15
+giant,almonds,Blue Diamond,16,oz,9.79,snacks,2025-01-15
+giant,trail mix,Kirkland,48,oz,12.79,snacks,2025-01-15

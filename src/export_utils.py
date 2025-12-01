@@ -1,6 +1,8 @@
-# export_to_csv
+# def export_to_csv
 
-# export_to_pdf
+# def export_to_pdf
+
+# def export_to_txt
 
 # other export formats???
 
