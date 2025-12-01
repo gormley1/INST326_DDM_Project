@@ -1,0 +1,139 @@
+store_name,item_name,brand,package_size,unit,price,category,date_checked
+safeway,milk,Lucerne,1,gallon,3.99,dairy,2025-01-15
+safeway,milk,Organic Valley,0.5,gallon,4.49,dairy,2025-01-15
+safeway,eggs,Lucerne,12,count,4.49,dairy,2025-01-15
+safeway,eggs,Eggland's Best,18,count,6.99,dairy,2025-01-15
+safeway,butter,Land O'Lakes,1,lb,5.99,dairy,2025-01-15
+safeway,cheese,Tillamook Cheddar,8,oz,4.99,dairy,2025-01-15
+safeway,yogurt,Chobani Greek,32,oz,5.49,dairy,2025-01-15
+safeway,sour cream,Daisy,16,oz,3.29,dairy,2025-01-15
+safeway,cream cheese,Philadelphia,8,oz,3.49,dairy,2025-01-15
+safeway,bread,Oroweat Whole Wheat,24,oz,3.99,bakery,2025-01-15
+safeway,bagels,Thomas',6,count,3.49,bakery,2025-01-15
+safeway,tortillas,Mission Flour,10,count,2.99,bakery,2025-01-15
+safeway,croissants,Safeway Bakery,6,count,4.99,bakery,2025-01-15
+safeway,tomato,Organic,1,lb,2.99,produce,2025-01-15
+safeway,tomatoes,Roma,1,lb,1.99,produce,2025-01-15
+safeway,onion,Yellow,1,lb,1.29,produce,2025-01-15
+safeway,onions,Red,1,lb,1.49,produce,2025-01-15
+safeway,garlic,Whole Bulb,1,each,0.79,produce,2025-01-15
+safeway,potato,Russet,5,lb,4.99,produce,2025-01-15
+safeway,potatoes,Red,3,lb,3.99,produce,2025-01-15
+safeway,carrot,Organic Baby,1,lb,2.49,produce,2025-01-15
+safeway,carrots,Regular,2,lb,2.99,produce,2025-01-15
+safeway,celery,Organic,1,bunch,2.49,produce,2025-01-15
+safeway,lettuce,Romaine,1,head,2.99,produce,2025-01-15
+safeway,spinach,Baby Spinach,10,oz,3.49,produce,2025-01-15
+safeway,cucumber,English,1,each,1.99,produce,2025-01-15
+safeway,bell pepper,Red,1,each,1.99,produce,2025-01-15
+safeway,bell pepper,Green,1,each,1.49,produce,2025-01-15
+safeway,broccoli,Fresh,1,lb,2.49,produce,2025-01-15
+safeway,cauliflower,Fresh,1,head,3.99,produce,2025-01-15
+safeway,mushroom,White Button,8,oz,2.99,produce,2025-01-15
+safeway,mushrooms,Portobello,6,oz,3.99,produce,2025-01-15
+safeway,avocado,Hass,1,each,1.49,produce,2025-01-15
+safeway,lemon,Fresh,1,each,0.79,produce,2025-01-15
+safeway,lime,Fresh,1,each,0.59,produce,2025-01-15
+safeway,apple,Honeycrisp,1,lb,2.99,produce,2025-01-15
+safeway,apples,Gala,3,lb,4.99,produce,2025-01-15
+safeway,banana,Organic,1,lb,0.79,produce,2025-01-15
+safeway,bananas,Regular,1,lb,0.59,produce,2025-01-15
+safeway,orange,Navel,1,lb,1.49,produce,2025-01-15
+safeway,strawberries,Fresh,1,lb,4.99,produce,2025-01-15
+safeway,blueberries,Fresh,6,oz,3.99,produce,2025-01-15
+safeway,grapes,Red Seedless,2,lb,5.99,produce,2025-01-15
+safeway,chicken breast,Boneless Skinless,1,lb,4.99,meat,2025-01-15
+safeway,chicken thighs,Bone-in,1,lb,2.99,meat,2025-01-15
+safeway,ground beef,85% Lean,1,lb,5.99,meat,2025-01-15
+safeway,ground beef,93% Lean,1,lb,6.99,meat,2025-01-15
+safeway,pork chops,Bone-in,1,lb,4.49,meat,2025-01-15
+safeway,bacon,Oscar Mayer,16,oz,7.99,meat,2025-01-15
+safeway,sausage,Jimmy Dean,16,oz,5.99,meat,2025-01-15
+safeway,salmon,Atlantic Fillet,1,lb,12.99,seafood,2025-01-15
+safeway,shrimp,Peeled Deveined,1,lb,9.99,seafood,2025-01-15
+safeway,tilapia,Frozen Fillet,1,lb,6.99,seafood,2025-01-15
+safeway,flour,Gold Medal All-Purpose,5,lb,4.99,baking,2025-01-15
+safeway,sugar,C&H Granulated,4,lb,3.99,baking,2025-01-15
+safeway,brown sugar,C&H Light,2,lb,3.49,baking,2025-01-15
+safeway,baking powder,Clabber Girl,8.1,oz,2.49,baking,2025-01-15
+safeway,baking soda,Arm & Hammer,1,lb,1.99,baking,2025-01-15
+safeway,vanilla extract,McCormick Pure,2,oz,7.99,baking,2025-01-15
+safeway,cocoa powder,Hershey's,8,oz,4.99,baking,2025-01-15
+safeway,chocolate chips,Nestle Toll House,12,oz,3.99,baking,2025-01-15
+safeway,yeast,Fleischmann's Active Dry,0.75,oz,4.99,baking,2025-01-15
+safeway,pasta,Barilla Spaghetti,16,oz,1.99,pasta,2025-01-15
+safeway,pasta,Barilla Penne,16,oz,1.99,pasta,2025-01-15
+safeway,rice,Lundberg White,2,lb,4.99,grains,2025-01-15
+safeway,rice,Uncle Ben's Brown,2,lb,3.99,grains,2025-01-15
+safeway,quinoa,Bob's Red Mill,16,oz,5.99,grains,2025-01-15
+safeway,oats,Quaker Old Fashioned,42,oz,5.99,grains,2025-01-15
+safeway,tomato paste,Contadina,6,oz,0.89,canned goods,2025-01-15
+safeway,tomato sauce,Hunt's,15,oz,1.29,canned goods,2025-01-15
+safeway,diced tomatoes,Hunt's,14.5,oz,1.49,canned goods,2025-01-15
+safeway,crushed tomatoes,Cento,28,oz,2.99,canned goods,2025-01-15
+safeway,black beans,Bush's Best,15,oz,1.49,canned goods,2025-01-15
+safeway,kidney beans,Bush's Best,15,oz,1.49,canned goods,2025-01-15
+safeway,chickpeas,Bush's Best,15,oz,1.49,canned goods,2025-01-15
+safeway,corn,Del Monte Whole Kernel,15.25,oz,1.29,canned goods,2025-01-15
+safeway,green beans,Del Monte Cut,14.5,oz,1.29,canned goods,2025-01-15
+safeway,chicken broth,Swanson,32,oz,2.99,canned goods,2025-01-15
+safeway,beef broth,Swanson,32,oz,2.99,canned goods,2025-01-15
+safeway,vegetable broth,Pacific Foods,32,oz,3.49,canned goods,2025-01-15
+safeway,coconut milk,Thai Kitchen,13.66,oz,2.49,canned goods,2025-01-15
+safeway,tuna,StarKist Chunk Light,5,oz,1.49,canned goods,2025-01-15
+safeway,olive oil,Bertolli Extra Virgin,25.5,oz,9.99,oils,2025-01-15
+safeway,vegetable oil,Wesson,48,oz,6.99,oils,2025-01-15
+safeway,canola oil,Crisco,48,oz,7.99,oils,2025-01-15
+safeway,cooking spray,Pam Original,6,oz,3.99,oils,2025-01-15
+safeway,salt,Morton Iodized,26,oz,1.49,spices,2025-01-15
+safeway,black pepper,McCormick Ground,3,oz,5.99,spices,2025-01-15
+safeway,garlic powder,McCormick,3.12,oz,4.99,spices,2025-01-15
+safeway,onion powder,McCormick,2.62,oz,4.99,spices,2025-01-15
+safeway,paprika,McCormick,2.12,oz,4.99,spices,2025-01-15
+safeway,cumin,McCormick Ground,1.5,oz,5.49,spices,2025-01-15
+safeway,oregano,McCormick,0.75,oz,4.99,spices,2025-01-15
+safeway,basil,McCormick,0.62,oz,4.99,spices,2025-01-15
+safeway,thyme,McCormick,0.7,oz,4.99,spices,2025-01-15
+safeway,cinnamon,McCormick Ground,2.37,oz,5.99,spices,2025-01-15
+safeway,chili powder,McCormick,2.5,oz,5.49,spices,2025-01-15
+safeway,red pepper flakes,McCormick,1.5,oz,4.99,spices,2025-01-15
+safeway,italian seasoning,McCormick,0.75,oz,4.99,spices,2025-01-15
+safeway,bay leaves,McCormick,0.12,oz,3.99,spices,2025-01-15
+safeway,soy sauce,Kikkoman,15,oz,3.99,condiments,2025-01-15
+safeway,worcestershire sauce,Lea & Perrins,10,oz,4.99,condiments,2025-01-15
+safeway,hot sauce,Frank's RedHot,12,oz,3.49,condiments,2025-01-15
+safeway,ketchup,Heinz,32,oz,3.99,condiments,2025-01-15
+safeway,mustard,French's Yellow,14,oz,2.49,condiments,2025-01-15
+safeway,mayonnaise,Best Foods,30,oz,5.99,condiments,2025-01-15
+safeway,bbq sauce,Sweet Baby Ray's,18,oz,2.99,condiments,2025-01-15
+safeway,salsa,Pace Picante,16,oz,3.49,condiments,2025-01-15
+safeway,ranch dressing,Hidden Valley,16,oz,4.99,condiments,2025-01-15
+safeway,italian dressing,Wish-Bone,15,oz,3.99,condiments,2025-01-15
+safeway,peanut butter,Jif Creamy,40,oz,6.99,spreads,2025-01-15
+safeway,jelly,Smucker's Strawberry,18,oz,3.99,spreads,2025-01-15
+safeway,honey,Nature Nate's,32,oz,9.99,spreads,2025-01-15
+safeway,maple syrup,Log Cabin,24,oz,5.99,breakfast,2025-01-15
+safeway,pancake mix,Aunt Jemima,32,oz,4.49,breakfast,2025-01-15
+safeway,cereal,Cheerios,18,oz,4.99,breakfast,2025-01-15
+safeway,cereal,Frosted Flakes,24,oz,5.49,breakfast,2025-01-15
+safeway,granola,Bear Naked,12,oz,5.99,breakfast,2025-01-15
+safeway,coffee,Peet's Ground,12,oz,8.99,beverages,2025-01-15
+safeway,tea,Lipton Black,100,count,5.99,beverages,2025-01-15
+safeway,orange juice,Tropicana,52,oz,4.99,beverages,2025-01-15
+safeway,apple juice,Mott's,64,oz,3.99,beverages,2025-01-15
+safeway,soda,Coca-Cola,12,count,6.99,beverages,2025-01-15
+safeway,sparkling water,La Croix,12,count,5.99,beverages,2025-01-15
+safeway,water,Arrowhead,24,count,5.99,beverages,2025-01-15
+safeway,ice cream,Ben & Jerry's,16,oz,5.49,frozen,2025-01-15
+safeway,frozen pizza,DiGiorno,27.5,oz,7.99,frozen,2025-01-15
+safeway,frozen vegetables,Birds Eye Mixed,16,oz,2.99,frozen,2025-01-15
+safeway,frozen french fries,Ore-Ida,28,oz,3.99,frozen,2025-01-15
+safeway,waffles,Eggo,24,count,4.99,frozen,2025-01-15
+safeway,chips,Lay's Classic,13,oz,4.99,snacks,2025-01-15
+safeway,pretzels,Snyder's,16,oz,3.99,snacks,2025-01-15
+safeway,crackers,Ritz,13.7,oz,4.49,snacks,2025-01-15
+safeway,cookies,Oreo,14.3,oz,4.99,snacks,2025-01-15
+safeway,popcorn,Pop Secret,6,count,4.49,snacks,2025-01-15
+safeway,nuts,Planters Peanuts,16,oz,6.99,snacks,2025-01-15
+safeway,almonds,Blue Diamond,16,oz,9.99,snacks,2025-01-15
+safeway,trail mix,Kirkland,48,oz,12.99,snacks,2025-01-15
