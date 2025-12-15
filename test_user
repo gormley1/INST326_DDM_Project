@@ -1,0 +1,163 @@
+[
+  {
+    "name": "Avocado Toast",
+    "ingredients": [
+      "2 slices whole wheat bread",
+      "1 ripe avocado",
+      "1 tsp lemon juice",
+      "1/4 tsp salt",
+      "1/4 tsp red pepper flakes",
+      "2 eggs",
+      "1 tbsp olive oil"
+    ],
+    "directions": [
+      "Toast bread slices until golden brown and crispy. While bread is toasting, cut avocado in half, remove pit, and scoop flesh into a bowl. Add lemon juice and salt, then mash with a fork until mostly smooth with some chunks remaining. In a small pan, heat olive oil over medium heat and fry eggs to your preference (sunny side up recommended). Spread mashed avocado evenly on both pieces of toast. Top each with a fried egg and sprinkle with red pepper flakes. Season with additional salt if desired and serve immediately."
+    ],
+    "source_file": "C:\\Matthew Gormley\\UMD\\Classes\\Fall 2025\\INST326\\Term_Project\\grocery_assistant\\INST326_DDM_Project\\data\\sample_recipes\\avocado_toast.txt",
+    "format": "txt",
+    "tags": [
+      "breakfast",
+      "quick",
+      "healthy"
+    ],
+    "date_added": "2025-12-14T23:02:01.672398"
+  },
+  {
+    "name": "Chicken Caesar Wrap",
+    "ingredients": [
+      "2 large flour tortillas",
+      "8 oz grilled chicken breast",
+      "2 cups romaine lettuce",
+      "1/4 cup parmesan cheese",
+      "1/4 cup Caesar dressing",
+      "1/2 cup croutons",
+      "1/4 tsp black pepper"
+    ],
+    "directions": [
+      "Slice grilled chicken into thin strips. Chop romaine lettuce into",
+      "bite-sized pieces. In a large bowl, toss lettuce with Caesar dressing",
+      "until evenly coated. Add chicken strips, parmesan cheese, crushed",
+      "croutons, and black pepper. Mix gently. Lay tortillas flat and divide",
+      "mixture between them, placing filling in the center. Fold in the sides",
+      "of each tortilla, then roll tightly from bottom to top. Slice each wrap",
+      "diagonally in half. Serve immediately or wrap in foil for lunch on the go.",
+      "Serves 2."
+    ],
+    "source_file": "C:\\Matthew Gormley\\UMD\\Classes\\Fall 2025\\INST326\\Term_Project\\grocery_assistant\\INST326_DDM_Project\\data\\sample_recipes\\chicken_caesar_wrap.pdf",
+    "format": "pdf",
+    "tags": [
+      "lunch",
+      "quick"
+    ],
+    "date_added": "2025-12-14T23:02:48.435162"
+  },
+  {
+    "name": "Greek Yogurt Parfait",
+    "ingredients": [
+      "2 cups Greek yogurt",
+      "1 cup granola",
+      "1 cup fresh strawberries",
+      "1 cup fresh blueberries",
+      "2 tbsp honey",
+      "1/4 cup sliced almonds",
+      "1 tsp vanilla extract"
+    ],
+    "directions": [
+      "In a clear glass or bowl, add a layer of Greek yogurt mixed with vanilla extract.",
+      "Top with a layer of granola, followed by a layer of mixed berries. Drizzle with honey.",
+      "Repeat layers until glass is filled, ending with berries and almonds on top.",
+      "Can be prepared the night before and stored in refrigerator.",
+      "Add granola just before serving to maintain crunchiness. Serves 2."
+    ],
+    "source_file": "C:\\Matthew Gormley\\UMD\\Classes\\Fall 2025\\INST326\\Term_Project\\grocery_assistant\\INST326_DDM_Project\\data\\sample_recipes\\greek_yogurt_parfait.docx",
+    "format": "docx",
+    "tags": [
+      "breakfast",
+      "sweet",
+      "quick"
+    ],
+    "date_added": "2025-12-14T23:04:02.264419"
+  },
+  {
+    "name": "Classic Scrambled Eggs",
+    "ingredients": [
+      "4 large eggs",
+      "2 tbsp milk",
+      "1 tbsp butter",
+      "1/4 tsp salt",
+      "1/4 tsp black pepper",
+      "2 tbsp shredded cheese"
+    ],
+    "directions": [
+      "Crack eggs into a bowl and whisk together with milk, salt, and pepper until well combined. Heat butter in a non-stick skillet over medium heat until melted and foamy. Pour in egg mixture and let sit for 20 seconds without stirring. Using a spatula, gently push eggs from edges to center, allowing uncooked eggs to flow to the sides. Continue this process for 2-3 minutes until eggs are softly set and slightly runny in places. Remove from heat and fold in shredded cheese. Eggs will continue to cook from residual heat. Serve immediately while hot and creamy."
+    ],
+    "source_file": "C:\\Matthew Gormley\\UMD\\Classes\\Fall 2025\\INST326\\Term_Project\\grocery_assistant\\INST326_DDM_Project\\data\\sample_recipes\\scrambled_eggs.txt",
+    "format": "txt",
+    "tags": [
+      "breakfast"
+    ],
+    "date_added": "2025-12-14T23:04:55.602354"
+  },
+  {
+    "name": "Turkey Club Sandwich",
+    "ingredients": [
+      "3 slices whole wheat bread",
+      "4 oz sliced turkey breast",
+      "4 slices bacon",
+      "2 slices cheddar cheese",
+      "2 leaves lettuce",
+      "2 slices tomato",
+      "2 tbsp mayonnaise",
+      "1 tbsp mustard"
+    ],
+    "directions": [
+      "Cook bacon in a skillet over medium heat until crispy, about 6-8 minutes.",
+      "Drain on paper towels. Toast all three slices of bread until golden.",
+      "Spread mayonnaise on one side of each toast slice. Spread mustard on one slice.",
+      "On the mustard slice, layer turkey, one cheese slice, and lettuce.",
+      "Top with second toast slice (mayo side down). On top of that, layer bacon, remaining cheese, tomato, and remaining lettuce.",
+      "Top with final toast slice, mayo side down.",
+      "Secure with toothpicks and cut diagonally into quarters. Serves 1."
+    ],
+    "source_file": "C:\\Matthew Gormley\\UMD\\Classes\\Fall 2025\\INST326\\Term_Project\\grocery_assistant\\INST326_DDM_Project\\data\\sample_recipes\\turkey_club_sandwich.docx",
+    "format": "docx",
+    "tags": [
+      "lunch",
+      "quick"
+    ],
+    "date_added": "2025-12-14T23:05:30.764637"
+  },
+  {
+    "name": "Veggie Quesadilla",
+    "ingredients": [
+      "4 flour tortillas",
+      "1 cup shredded cheddar cheese",
+      "1 bell pepper",
+      "1 small onion",
+      "1 cup mushrooms",
+      "1 tbsp olive oil",
+      "1/2 tsp cumin",
+      "1/4 tsp salt",
+      "1/2 cup salsa",
+      "1/4 cup sour cream"
+    ],
+    "directions": [
+      "Dice bell pepper, onion, and mushrooms. Heat olive oil in a large skillet",
+      "over medium-high heat. Add vegetables, cumin, and salt. Saute for 5-7",
+      "minutes until softened. Remove vegetables from pan. Wipe pan clean and",
+      "reduce heat to medium. Place one tortilla in pan and sprinkle with half",
+      "the cheese. Top with half the vegetable mixture, then another tortilla.",
+      "Cook for 2-3 minutes until bottom is golden, then carefully flip. Cook",
+      "another 2 minutes until cheese is melted and tortilla is crispy. Remove",
+      "and keep warm. Repeat with remaining ingredients. Cut each quesadilla",
+      "into 4 wedges. Serve hot with salsa and sour cream. Serves 2-4."
+    ],
+    "source_file": "C:\\Matthew Gormley\\UMD\\Classes\\Fall 2025\\INST326\\Term_Project\\grocery_assistant\\INST326_DDM_Project\\data\\sample_recipes\\veggie_quesadilla.pdf",
+    "format": "pdf",
+    "tags": [
+      "lunch",
+      "quick"
+    ],
+    "date_added": "2025-12-14T23:06:00.016822"
+  }
+]

@@ -1,0 +1,115 @@
+Test Shopping LIst 1
+Recipes: Classic Scrambled Eggs, Veggie Quesadilla, Chicken Caesar Wrap, Greek Yogurt Parfait, Avocado Toast
+Generated: December 14, 2025 at 11:40 PM
+==================================================
+
+
+==================================================
+  PRODUCE
+==================================================
+
+[ ] 3.0 each 1/4 Tsp Black Pepper --- used in Classic Scrambled Eggs, Chicken Caesar Wrap
+
+[ ] 2.0 each 1/4 Tsp Red Pepper Flakes --- used in Avocado Toast
+
+[ ] 3.0 cup Mushrooms --- used in Veggie Quesadilla
+
+[ ] 3.0 small Onion --- used in Veggie Quesadilla
+
+[ ] 3.0 bell Pepper --- used in Veggie Quesadilla
+
+[ ] 4.0 cups Romaine Lettuce --- used in Chicken Caesar Wrap
+
+
+==================================================
+  DAIRY
+==================================================
+
+[ ] 2.0 each 1/4 Cup Parmesan Cheese --- used in Chicken Caesar Wrap
+
+[ ] 3.0 each 1/4 Cup Sour Cream --- used in Veggie Quesadilla
+
+[ ] 1.0 tbsp Butter --- used in Classic Scrambled Eggs
+
+[ ] 8.0 large Eggs --- used in Classic Scrambled Eggs, Avocado Toast
+     Notes: | unit mismatch kept as 'large', saw 'each'
+
+[ ] 2.0 cups Greek Yogurt --- used in Greek Yogurt Parfait
+
+[ ] 2.0 tbsp Milk --- used in Classic Scrambled Eggs
+
+[ ] 3.0 cup Shredded Cheddar Cheese --- used in Veggie Quesadilla
+
+[ ] 2.0 tbsp Shredded Cheese --- used in Classic Scrambled Eggs
+
+
+==================================================
+  MEAT & SEAFOOD
+==================================================
+
+[ ] 16.0 oz Grilled Chicken Breast --- used in Chicken Caesar Wrap
+
+
+==================================================
+  PASTA & GRAINS
+==================================================
+
+[ ] 4.0 large Flour Tortillas --- used in Chicken Caesar Wrap
+
+[ ] 12.0 flour Tortillas --- used in Veggie Quesadilla
+
+[ ] 4.0 slices Whole Wheat Bread --- used in Avocado Toast
+
+
+==================================================
+  SPICES & SEASONINGS
+==================================================
+
+[ ] 3.0 each 1/2 Tsp Cumin --- used in Veggie Quesadilla
+
+[ ] 6.0 each 1/4 Tsp Salt --- used in Classic Scrambled Eggs, Veggie Quesadilla, Avocado Toast
+
+[ ] 1.0 tsp Vanilla Extract --- used in Greek Yogurt Parfait
+
+
+==================================================
+  BAKING
+==================================================
+
+[ ] 2.0 tbsp Honey --- used in Greek Yogurt Parfait
+
+
+==================================================
+  CONDIMENTS & SAUCES
+==================================================
+
+[ ] 3.0 each 1/2 Cup Salsa --- used in Veggie Quesadilla
+
+[ ] 2.0 each 1/4 Cup Caesar Dressing --- used in Chicken Caesar Wrap
+
+[ ] 5.0 tbsp Olive Oil --- used in Veggie Quesadilla, Avocado Toast
+
+
+==================================================
+  BEVERAGES
+==================================================
+
+[ ] 2.0 tsp Lemon Juice --- used in Avocado Toast
+
+
+==================================================
+  OTHER
+==================================================
+
+[ ] 2.0 each 1/2 Cup Croutons --- used in Chicken Caesar Wrap
+
+[ ] 1.0 each 1/4 Cup Sliced Almonds --- used in Greek Yogurt Parfait
+
+[ ] 2.0 ripe Avocado --- used in Avocado Toast
+
+[ ] 1.0 cup Fresh Blueberries --- used in Greek Yogurt Parfait
+
+[ ] 1.0 cup Fresh Strawberries --- used in Greek Yogurt Parfait
+
+[ ] 1.0 cup Granola --- used in Greek Yogurt Parfait
+

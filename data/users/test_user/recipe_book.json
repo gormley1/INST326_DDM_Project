@@ -1,0 +1,59 @@
+[
+  {
+    "name": "Pasta Marinara",
+    "ingredients": [
+      "1 lb pasta",
+      "2 cans (6 oz) tomato paste",
+      "3 cloves garlic, minced",
+      "1 tsp dried basil",
+      "1 tsp dried oregano",
+      "Salt and pepper to taste"
+    ],
+    "directions": "Boil pasta according to package directions. Meanwhile, sauté garlic in olive oil, add tomato paste and seasonings. Simmer 10 minutes. Combine with cooked pasta.",
+    "tags": [
+      "dinner",
+      "italian",
+      "vegetarian",
+      "quick"
+    ],
+    "date_added": "2025-12-14T18:22:21.512971"
+  },
+  {
+    "name": "Caesar Salad",
+    "ingredients": [
+      "1 head romaine lettuce",
+      "1/2 cup parmesan cheese",
+      "1 cup croutons",
+      "1/2 cup Caesar dressing"
+    ],
+    "directions": "Chop lettuce. Toss with dressing, cheese, and croutons. Serve immediately.",
+    "tags": [
+      "salad",
+      "side dish",
+      "quick"
+    ],
+    "date_added": "2025-12-14T18:22:21.514107"
+  },
+  {
+    "name": "Chocolate Chip Cookies",
+    "ingredients": [
+      "2 cups all-purpose flour",
+      "1 cup butter, softened",
+      "3/4 cup granulated sugar",
+      "3/4 cup brown sugar",
+      "2 eggs",
+      "2 cups chocolate chips",
+      "1 tsp vanilla extract",
+      "1 tsp baking soda",
+      "1/2 tsp salt"
+    ],
+    "directions": "Cream butter and sugars. Add eggs and vanilla. Mix in dry ingredients. Fold in chocolate chips. Drop by spoonfuls onto baking sheet. Bake at 350°F for 10-12 minutes.",
+    "tags": [
+      "dessert",
+      "baking",
+      "party",
+      "kid-friendly"
+    ],
+    "date_added": "2025-12-14T18:22:21.515675"
+  }
+]
