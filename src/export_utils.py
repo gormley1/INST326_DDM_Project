@@ -61,4 +61,3 @@ def format_shopping_list_display(shopping: dict) -> str:
         # this should include state sales tax eventually
 
     return grocery_list
-
