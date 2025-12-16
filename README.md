@@ -1,288 +1,474 @@
-DDM Grocery List Information Retrieval & Analysis Tool
+# Cornucopia Grocery List Assistant
 
-An early-stage grocery tool that reads recipes, extracts ingredients, compares store prices, and builds one organized shopping list. The main goal is to help people (especially families and students on a budget) save both time and money while planning meals.
+**Smart meal planning & grocery shopping made easy**
 
-Version: 0.1.0
-Status: Phase 1 — Function Library (foundations)
+Version 1.0.0 | INST326 Fall 2025 | Team DDM
 
+## Table of Contents
 
-Team Members & Roles
+- [Overview](#overview)
+- [Problem Statement](#problem-statement)
+- [Features](#features)
+- [Team](#team)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Testing](#testing)
+- [Technical Architecture](#technical-architecture)
+- [Documentation](#documentation)
+- [Future Enhancements](#future-enhancements)
+- [License](#license)
 
-Team DDM — INST326 Section 0303
+## Overview
 
-Darrell Cox — Documentation Lead
-Focus: ingredient parsing, grouping, conversions
+Cornucopia is a command-line grocery shopping assistant that helps users import & manage recipes, organize meals, compare store prices, and generate optimized formatted shopping lists. Built with Python using object-oriented programming principles, Cornucopia addresses the real-world challenge of managing time requirements for meal planning & grocery expenses in an era of limited personal tie & fluctuating food prices.
 
-Denis Njoroge — Lead Developer
-Focus: shopping list logic, price lookup, file validation, TXT parsing
+### Key Capabilities
 
-Matthew Gormley — Data Architect & Project Coordinator
-Focus: store data, PDF parsing, display formatting, totals
+- Import recipes from multiple formats (TXT, PDF, DOCX)
+- Organize recipes with custom tags (dinner, quick, vegetarian, etc.)
+- Plan meals for multiple days with automatic ingredient aggregation
+- Compare prices across multiple grocery stores
+- Export shopping lists to PDF, CSV, or TXT formats
 
+## Problem Statement
 
-Domain Focus & Problem Statement
+Grocery prices fluctuate weekly due to inflation, supply chain disruptions, and dynamic pricing strategies. Many people, the developers included, barely have enough time to cook meals everyday, let alone plan out grocery shopping every single week. This instability disproportionately affects low-income households and people with limited time (such as students & young professionals). The difference of a few dollars can determine whether bills get paid on time, and an extra hour of shopping can mean the difference between self care, making dinner, or going hungry.
 
-Domain: Information Retrieval / Data Management
+**Our Solution**: Cornucopia provides price transparency and time-saving automation to help users make expedited & informed grocery shopping decisions.
 
-Problem (why this matters):
-Grocery prices bounce around due to inflation, supply chain issues, and dynamic pricing. It’s hard to know which store is actually cheapest and what your total will be until you check out. That makes budgeting stressful—especially when every dollar matters.
+## Features
 
-Our solution:
+### Recipe Management
 
-Read recipes from files (.txt, .pdf, .docx coming soon)
+- **Multi-format import**: TXT, PDF, DOCX supported in current version
+- **Persistent storage**: JSON-based recipe book
+- **Tag organization**: Categorize recipes (breakfast, dinner, quick, Italian, etc.)
+- **Fuzzy search**: Find recipes by name or ingredient
 
-Pull out the ingredients in a clean, standard way
+### Smart Shopping Lists
 
-Compare prices across local stores (using mock CSVs for now)
+- **Multi-recipe aggregation**: Combine ingredients from multiple recipes
+- **Quantity scaling**: Automatically adjust for servings
+- **Unit handling**: Handle mixed units (cups, tablespoons, pounds)
+- **Multi-day planning**: Plan meals for entire week (up to 14 days)
 
-Build one smart shopping list you can use or share
+### Price Comparison
 
+- **Multi-store support**: Compare Safeway, Giant, Trader Joe's
+- **Price calculations**: Itemized totals with missing items tracking
+- **Best value finder**: Identify cheapest store automatically
 
+### Export Options
 
-Installation & Setup
+- **PDF**: Professional formatted lists with checkboxes
+- **CSV**: Spreadsheet-compatible format
+- **TXT**: Simple text format for mobile devices & VS Code interface
+- **Categorized organization**: Items grouped by store section (Produce, Dairy, etc.)
 
-Requirements
+### User Settings
 
-Python 3.8+
+- Customizable default servings
+- Preferred store selection
+- Default export format
+- Export directory configuration
 
-Git
+## Team
 
-pip
+**Team DDM - INST326 Section 0303**
 
-Steps
+| Member              | Role                                            | Contributions                                                                                                        |
+| ------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Matthew Gormley** | Data Architect & Lead Coordinator, Co-Developer | RecipeBook class, export utilities (CSV/PDF/TXT), store data integration, main CLI application, project coordination |
+| **Darrell Cox**     | Documentation Lead                              | Recipe parsing (TXT/PDF/DOCX), ingredient processing, documentation, usage guides                                    |
+| **Denis Njoroge**   | Lead Developer                                  | Shopping list compilation, ingredient normalization, store comparison, testing framework                             |
 
-# 1) Clone
-git clone https://github.com/team-ddm/grocery-list-project.git
-cd grocery-list-project
+## Installation
 
-# 2) Create + activate venv
+### Prerequisites
+
+- Python 3.8 or higher
+- pip package manager
+- Git (for cloning repository)
+
+### Setup Instructions
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/your-team/ddm-grocery-project.git
+cd ddm-grocery-project
+```
+
+2. **Create virtual environment**
+
+```bash
+# Windows
 python -m venv venv
-venv\Scripts\activate   # Windows
-# or
-source venv/bin/activate  # Mac/Linux
+venv\Scripts\activate
 
-# 3) Install deps
+# Mac/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+3. **Install dependencies**
+
+```bash
 pip install -r requirements.txt
+```
 
-Quick check:
-python -c "print('Setup successful!')"
+4. **Verify installation**
 
+```bash
+python main.py
+```
 
-Quick Start
+You should see the Cornucopia welcome screen (the Main Menu with 7 options).
 
-from src.recipe_parser import parse_recipe_file
-from src.shopping_list import compile_shopping_list
-from src.store_data import load_store_data, calculate_shopping_list_total, compare_store_totals  # compare_store_totals coming soon
-from src.export_utils import export_to_csv  # when ready
+## Usage
 
-# 1) Import two recipes (txt + pdf)
-r1 = parse_recipe_file('data/sample_recipes/pasta_marinara.txt')
-r2 = parse_recipe_file('data/sample_recipes/chicken_stir_fry.pdf')
+### Quick Start
 
-# 2) Build the combined shopping list (scale servings)
-recipes = [r1, r2]
-servings = {r1['name']: 4, r2['name']: 2}
-shopping = compile_shopping_list(recipes, servings)
+1. **Run the application**
 
-# 3) Load a store inventory and total it up
-inv = load_store_data('safeway')
-summary = calculate_shopping_list_total(shopping, inv)
-print('Estimated total:', summary['total'])
+```bash
+python main.py
+```
 
+2. **Import your first recipe** (Option 1)
 
-Project Structure
+   - Enter path to recipe file (can be external from project directory): `data/sample_recipes/scrambled_eggs.txt`
+   - Add tags when prompted: `breakfast, quick`
+
+3. **Create a shopping list** (Option 3)
+
+   - Select number of days: `1`
+   - Choose recipes to include
+   - Enter servings for each recipe
+
+4. **Compare store prices** (Option 4)
+
+   - View price comparison across stores
+   - See which store is cheapest
+
+5. **Export your list** (Option 5)
+   - Choose format: PDF, CSV, or TXT
+   - List saved to `exports/` directory
+
+### Example Workflows
+
+#### Workflow 1: Weekend Meal Prep
+
+```
+1. Import Recipe → avocado_toast.txt (tag: breakfast)
+2. Import Recipe → veggie_quesadilla.pdf (tag: lunch)
+3. Import Recipe → chicken_caesar_wrap.pdf (tag: lunch)
+4. Create Shopping List → Select all 3 recipes → 4 servings each
+5. Compare Prices → See cheapest store
+6. Export → PDF format → Print for shopping
+```
+
+#### Workflow 2: Weekly Meal Planning
+
+```
+1. View Recipe Book → Filter by "dinner" tag
+2. Create Shopping List → Plan 7 days → Select recipes for each day
+3. Compare Prices → Identify best store
+4. Export → CSV → Upload to Google Drive for family
+```
+
+#### Workflow 3: Quick Breakfast Planning
+
+```
+1. View Recipe Book → Search "egg"
+2. Create Shopping List → Select 2 breakfast recipes → 2 servings
+3. Export → TXT → Send to phone for quick shopping
+```
+
+## Project Structure
+
+```
 ddm-grocery-project/
-├─ README.md
-├─ requirements.txt
-├─ src/
-│  ├─ recipe_parser.py           # validate_file_format, parse_recipe_file, parse_txt_recipe, parse_pdf_recipe, extract_ingredients_from_text
-│  ├─ ingredient_processor.py    # convert_fraction, parse_ingredient_line, normalize_ingredient_name, clean_ingredient_text, convert_units
-│  ├─ shopping_list.py           # compile_shopping_list, calculate_total_quantity, group_items_by_category, (validate_serving_size TBD)
-│  ├─ store_data.py              # load_store_data, find_item_price, calculate_shopping_list_total, (compare_store_totals TBD)
-│  └─ export_utils.py            # export_to_csv, export_to_pdf, format_shopping_list_display (currently in main code block)
-├─ data/
-│  ├─ mock_stores/
-│  │  ├─ safeway_inventory.csv
-│  │  ├─ giant_inventory.csv
-│  │  └─ trader_joes_inventory.csv
-│  └─ sample_recipes/
-│     ├─ pasta_marinara.txt
-│     └─ chicken_stir_fry.pdf
-└─ docs/ (optional)
+│
+├── main.py                      # Main CLI application
+├── requirements.txt             # Python dependencies
+├── README.md                    # This file
+├── TESTING.md                   # Testing documentation
+│
+├── data/                        # Data files
+│   ├── mock_stores/            # Store inventory CSV files
+│   │   ├── safeway_inventory.csv
+│   │   ├── giant_inventory.csv
+|   |   └── traderjoes_inventory.csv
+│   ├── sample_recipes/         # Example recipe files (there are more than what's listed)
+│   │   ├── scrambled_eggs.txt
+│   │   ├── veggie_quesadilla.pdf
+│   │   └── greek_yogurt_parfait.docx
+│   └── users/                  # User data directories
+│       └── test_user/
+│           ├── recipe_book.json
+│           └── settings.json
+│
+├── src/                        # Source code
+│   ├── models/                 # Class definitions
+│   │   ├── RecipeBook.py      # Recipe storage & management
+│   │   ├── Ingredient.py      # Ingredient class
+│   │   ├── ShoppingList.py    # ShoppingList class
+│   │   └── Store.py           # Store hierarchy (Abstract, CSV, API, Scraper)
+│   ├── recipe_parser.py        # RecipeParser class (TXT/PDF/DOCX)
+│   ├── shopping_list.py        # Shopping list compilation
+│   ├── ingredient_processor.py # Ingredient normalization
+│   ├── store_data.py           # Store data loading & comparison
+│   └── export_utils.py         # Export functions (CSV/PDF/TXT)
+│
+├── tests/                      # Test suite
+│   ├── test_recipe_book.py     # RecipeBook unit tests (42 tests)
+│   ├── test_export_utils.py    # Export unit tests (30 tests)
+│   ├── test_integration.py     # Integration tests (8 tests)
+│   ├── test_system.py          # System tests (5 tests)
+|   └── archive/                # Old/obsolete tests from past project components (multiple files)
+│
+└── exports/                    # Generated shopping lists
+    ├── shopping_list_20241216.pdf
+    └── shopping_list_20241216.csv
+```
+
+## Testing
+
+### Test Strategy
+
+Cornucopia uses a comprehensive three-tier testing approach:
+
+**85+ Total Tests**
+
+- **Unit Tests (72)**: Test individual components in isolation
+- **Integration Tests (8)**: Test component interactions
+- **System Tests (5)**: Test complete user workflows
+
+### Running Tests
+
+```bash
+# Run all tests
+python -m unittest discover tests -p "test_*.py" -v
+
+# Run specific test file
+python -m unittest tests.test_recipe_book -v
+
+# Run specific test class
+python -m unittest tests.test_system.TestCompleteRecipeWorkflow -v
+```
+
+### Test Coverage
+
+- Recipe import from all formats (TXT, PDF, DOCX)
+- Recipe storage and persistence
+- Shopping list compilation and aggregation
+- Store price comparison
+- Export to all formats (CSV, PDF, TXT)
+- Tag management
+- Error handling
+- Complete user workflows
+
+For detailed testing documentation, see [TESTING.md](TESTING.md).
+
+## Technical Architecture
+
+### Object-Oriented Design
+
+**Core Classes:**
+
+- `RecipeBook`: Manages recipe collection with JSON persistence
+- `RecipeParser`: Inheritance hierarchy for parsing recipes from different file formats
+- `Ingredient`: Represents single ingredient with quantity/unit
+- `ShoppingList`: Aggregates ingredients from multiple recipes
+- `AbstractStore`: Abstract base for store types
+- `CSVStore`, `MockAPIStore`, `WebScraperStore`: Store implementations
+
+**Design Patterns:**
+
+- **Inheritance**: Store hierarchy (AbstractStore --> CSVStore, APIStore, ScraperStore)
+- **Composition**: ShoppingList HAS ingredients, HAS recipes, HAS store comparisons
+- **Polymorphism**: Same interface, different implementations (load_inventory, price_for)
+- **Abstraction**: Abstract methods force implementation in subclasses
+
+### Data Flow
+
+```
+Recipe Files (TXT/PDF/DOCX)
+    ↓
+RecipeParser (parse & validate)
+    ↓
+RecipeBook (store with tags)
+    ↓
+compile_shopping_list (aggregate ingredients)
+    ↓
+ShoppingList (with quantities & units)
+    ↓
+compare_store_totals (calculate prices)
+    ↓
+export_to_pdf/csv/txt (generate output)
+    ↓
+User receives shopping list
+```
+
+### Technology Stack
+
+- **Language**: Python 3.8+
+- **Data Storage**: JSON (recipe_book.json)
+- **PDF Handling**: PyPDF2 (reading), fpdf2 (generation), pdfplumber (text extraction)
+- **DOCX Handling**: python-docx
+- **Testing**: unittest (standard library)
+
+## Documentation
+
+### Available Documentation
+
+- **README.md** (this file): Project overview, installation, usage
+- **TESTING.md**: Comprehensive testing strategy and instructions
+- **Inline Documentation**: All functions have detailed docstrings & comments in code
+- **Project Charter**: Original project proposal (submitted earlier in the semester)
+
+### Code Documentation Standards
+
+All functions include:
+
+- Purpose description
+- Parameter types and descriptions
+- Return value description
+- Usage examples
+- Error conditions
+
+Example:
+
+```python
+def compile_shopping_list(recipe_list: List[Dict], num_servings_dict: Dict) -> Dict:
+    """
+    Aggregate ingredients from multiple recipes into one shopping list.
 
+    Args:
+        recipe_list: List of recipe dictionaries
+        num_servings_dict: Map of recipe name → servings multiplier
 
+    Returns:
+        dict: Aggregated shopping list with quantities and units
 
-Function Library Overview (with owners)
-Recipe Import & Parsing
+    Example:
+        >>> recipes = [{'name': 'Pasta', 'ingredients': ['2 cups flour']}]
+        >>> servings = {'Pasta': 2}
+        >>> compile_shopping_list(recipes, servings)
+        {'flour': {'quantity': 4.0, 'unit': 'cups', ...}}
+    """
+```
 
-validate_file_format(filepath) — Simple (Denis)
-Checks .txt/.docx/.pdf extension support.
+## Project Evolution
 
-parse_recipe_file(filepath) — Medium (Matt)
-Dispatches to the right parser based on extension.
+### Project 1: Function Library (Oct 2024)
 
-parse_txt_recipe(filepath) — Medium (Denis)
-Reads plain text recipes; grabs name, ingredients, directions.
+- Built 15+ utility functions
+- Recipe parsing (TXT, PDF)
+- Ingredient processing
+- Store data loading
+- Basic shopping list compilation
 
-parse_pdf_recipe(filepath) — Complex (Matt)
-Uses pdfplumber to extract text, then same idea as TXT.
+### Project 2: OOP Classes (Nov 2024)
 
-extract_ingredients_from_text(text_block) — Medium (Darrell)
-Pulls bullet-style ingredient lines from a block of text.
+- Created `RecipeBook` class with persistence
+- Implemented `Ingredient` class
+- Built `ShoppingList` class with composition
+- Added encapsulation and properties
 
-parse_docx_recipe(filepath) — (Unclaimed / TODO)
+### Project 3: Advanced OOP (Nov 2024)
 
-Ingredient Processing
+- Designed `AbstractStore` hierarchy (inheritance)
+- Implemented `CSVStore`, `MockAPIStore`, `WebScraperStore` (polymorphism)
+- Added abstract base classes (ABC)
+- Demonstrated composition vs inheritance
 
-convert_fraction(frac_str) — Helper (Matt)
-Converts things like 1 1/2 or 2/5 to floats.
+### Project 4: Integration & Testing (Dec 2024)
 
-parse_ingredient_line(ingredient_string) — Medium (Darrell)
-Returns {quantity, unit, item, preparation} from one line.
+- Built complete CLI application (`main.py`)
+- Created 85+ comprehensive tests
+- Added export functionality (PDF, CSV, TXT)
+- Implemented tag-based organization
+- Added multi-day meal planning
+- Professional documentation
 
-normalize_ingredient_name(raw_ingredient) — Medium (Denis)
-Lowercases, removes descriptors, basic synonyms, naive plurals.
+## Future Enhancements
 
-clean_ingredient_text(text) — Simple (Darrell)
-Removes bullets/extra spaces.
+### Planned Features (Post-Semester, built by Matt solo as a personal project)
 
-convert_units(quantity, from_unit, to_unit) — Medium (Darrell)
-Basic volume/weight conversions (tbsp/tsp/cup, oz/lb).
+**Phase 1: Enhanced Data Collection**
 
-Shopping List Logic
+- Receipt OCR processing (scan receipts to build price database)
+- Crowdsourced price data (users contribute pricing)
+- Real-time store API integration (if inexpensive/with permission)
+- Price history tracking (for individual users, geographic locations, and store chains)
 
-compile_shopping_list(recipe_list, num_servings_dict) — Complex (Denis)
-Combines ingredients across recipes; scales servings; notes unit mismatches.
+**Phase 2: Advanced Features**
 
-calculate_total_quantity(ingredient_entries) — Medium (Matt)
-Sums quantities for the same ingredient (keeps first unit).
+- Nutrition analysis per recipe (need a nutritional database first)
+- Dietary restriction filtering (gluten-free, vegan, nut allergy, etc.)
+- Meal plan templates (keto, Mediterranean, etc.)
+- Pantry inventory management
+- Shopping List building based on available ingredient matches to existing recipes
+- Expiration date tracking
 
-group_items_by_category(shopping_list) — Medium (Darrell)
-Buckets items: produce/dairy/meat/etc. (simple mapping).
+**Phase 3: User Experience**
 
-format_shopping_list_display(shopping) — Simple (Matt)
-Clean console string for the final list.
+- Web interface (Flask/Django)
+- Mobile app (React Native)
+- User accounts with cloud sync
+- Recipe sharing community
+- Meal planning calendar
+- Savings tracking
+- Deal/price drop notifications
 
-Note: validate_serving_size and compare_store_totals are planned next.
+**Phase 4: Intelligence**
 
-Store Data & Pricing
+- Machine learning price predictions
+- Personalized recipe recommendations
+- Automatic unit conversions with ML
+- Smart ingredient substitutions
 
-load_store_data(store_name, data_source='csv') — Medium (Matt)
-Reads mock CSV store inventories into a dict.
+### Known Limitations
 
-find_item_price(item_name, store_inventory) — Simple→Medium (Denis)
-Exact + basic plural/singular matching; returns price info dict.
+- **Store Data**: Currently uses mock CSV data (real API integration or user price database pending)
+- **Unit Conversions**: Basic conversions only (cups ↔ tablespoons, oz ↔ lbs)
+- **Recipe Parsing**: May struggle with non-standard formats (especially PDF tables)
+- **Price Accuracy**: Dependent on data freshness
+- **Store Coverage**: Limited to stores with data files
 
-calculate_shopping_list_total(shopping_list, store_inventory) — Medium (Matt)
-Itemized totals + not-found list for a specific store.
+## Contributing
 
+This project was completed as part of INST326 coursework. For questions or suggestions:
 
-Usage Examples (short + realistic)
-A) Parse TXT + PDF, then Display
-from src.recipe_parser import parse_recipe_file
-from src.shopping_list import compile_shopping_list
-from export_utils import format_shopping_list_display  # or from the location you placed it
+**Team Contact:**
 
-r_txt = parse_recipe_file('data/sample_recipes/pasta_marinara.txt')
-r_pdf = parse_recipe_file('data/sample_recipes/chicken_stir_fry.pdf')
+- Matthew Gormley: gormley1@terpmail.umd.edu
+- Darrell Cox: [GitHub/Email]
+- Denis Njoroge: [GitHub/Email]
 
-shopping = compile_shopping_list([r_txt, r_pdf], {r_txt['name']: 4, r_pdf['name']: 2})
-print(format_shopping_list_display(shopping))
+## License
 
+This project was created for educational purposes as part of INST326: Object-Oriented Programming for Information Science at the University of Maryland.
+More robust license pending (given potential future development, this is NOT an open source project).
 
-B) Price Out at One Store
+**Course**: INST326 - Fall 2025  
+**Section**: 0303  
+**Instructor**: Dr. Christopher Dempwolf (happy retirement!!)
+**Institution**: University of Maryland, College of Information
 
-from src.store_data import load_store_data, calculate_shopping_list_total
+## Acknowledgments
 
-inv = load_store_data('safeway')
-summary = calculate_shopping_list_total(shopping, inv)
-print(summary['total'])
-print(summary['itemized'])
-print('Missing:', summary['not_found'])
+- **Course Instructors & TAs**: For guidance throughout the semester
+- **Team DDM**: For excellent collaboration and dedication despite setbacks and a myriad of challenges
+- **Python Community**: For excellent libraries (fpdf2, PyPDF2, python-docx, etc.)
+- **Users**: Who will benefit from grocery price transparency
+- **Claude**: AI tool used over the course of the project for debugging source code, documentation formatting, mock data generation, and test suite development assistance
 
-C) Clean + Normalize One Ingredient
+**Last Updated**: December 16, 2025  
+**Version**: 1.0.0  
+**Status**: Project Complete - Ready for Demo
 
-
-from src.ingredient_processor import clean_ingredient_text, normalize_ingredient_name
-
-raw = "  • Fresh Tomatoes  "
-cleaned = clean_ingredient_text(raw)          # "Fresh Tomatoes"
-normalized = normalize_ingredient_name(cleaned) # "tomato"
-print(normalized)
-
-
-
-Contribution Guidelines (how we work)
-
-Branch names
-[name]-[feature]
-# examples:
-denis-shopping-list
-darrell-parsing
-matthew-pdf-display
-
-
-Workflow
-
-git pull origin main
-
-git checkout -b yourname-feature
-
-Write or update a function (keep it small + clear)
-
-Test with a tiny script or doctest
-
-Commit with a clear message
-
-Push and open a PR
-
-Tag a reviewer (ex: @darrell)
-
-Code rules
-
-Every function has a proper docstring (what it does, args, returns, examples)
-
-Follow PEP 8 (spacing, names, etc.)
-
-Validate inputs and handle errors
-
-Keep logic beginner-friendly and readable
-
-Add at least one quick example or doctest
-
-
-Development Timeline
-
-Phase 1 (Now) — Function library foundations ✅ in progress
-
-Implement & document core functions
-
-Mock store CSVs
-
-Phase 2 — Classes (Recipe, Ingredient, Store, ShoppingList)
-
-Phase 3 — Integration & polishing (exports, compare_store_totals, docx parser)
-
-
-
-Course Info
-
-Course: INST326 — Object-Oriented Programming for Information Science
-Section: 0303 | Semester: Fall 2025
-Instructor: [Instructor Name]
-
-
-
-Contact
-
-Questions or bugs?
-
-Open an issue on GitHub
-
-Or message our group chat
-
-Lead contact: matthew.j.j.gormley@gmail.com
-
-
-Last Updated: October 2025
-Version: 0.1.0 (Phase 1)
+_Making grocery shopping easier, one recipe at a time._
