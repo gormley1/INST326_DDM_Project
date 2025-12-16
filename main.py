@@ -20,7 +20,7 @@ from src.models.RecipeBook import RecipeBook
 from src.export_utils import export_to_csv, export_to_pdf, export_to_txt, group_items_by_category
 from src.recipe_parser import RecipeParser, TXTRecipeParser, PDFRecipeParser, DOCXRecipeParser
 from src.shopping_list import compile_shopping_list
-# from src.store_data import compare_store_totals
+from src.store_data import compare_store_totals
 
 
 class CornucopiaApp:
@@ -137,7 +137,7 @@ class CornucopiaApp:
     # ═══════════════════════════════════════════════════════════════
     
     def import_recipe_workflow(self) -> None:
-        """Handle recipe import workflow."""
+        """Handle recipe import workflow w/ rename and preview."""
         print("\n" + "="*60)
         print("IMPORT RECIPE")
         print("="*60)
@@ -160,14 +160,67 @@ class CornucopiaApp:
             elif filepath.endswith('.docx'):
                 parser = DOCXRecipeParser(filepath)
             else:
-                raise ValueError(f"Unsupported file format")
+                raise ValueError(f"Unsupported file format. Supported: .txt, .pdf, .docx")
+                return
 
-            # Validate and parse
-            if parser.validate_format():
+            # Validate format and parse
+            if not parser.validate_format():
+                print("Invalid file format")
+                return
+            else: # parse the recipe
                 recipe = parser.parse()
+                print(f"Successfully parsed: {recipe['name']}")
+            
+            # ----- added during bug fixes: offer to rename recipe file -----
+            print(f"\nParsed recipe name: '{recipe['name']}'")
+            rename = input("Rename this recipe? (y/n) : ").strip().lower()
+
+            if rename == 'y':
+                new_name = input("Enter new recipe name: ").strip()
+                if new_name:
+                    old_name = recipe['name']
+                    recipe['name'] = new_name
+                    print(f"Recipe renamed: '{old_name}' --> '{new_name}'")
+            # ---------------------------------------------------------------
+
+            # ----- added during bug fixes: show recipe preview -----
+            print(f"\n{'─'*60}")
+            print("RECIPE PREVIEW")
+            print("─"*60)
+            print(f"Name: {recipe['name']}")
+            print(f"Format: {recipe.get('format', 'unknown')}")
+            print(f"\nIngredients ({len(recipe['ingredients'])} items):")
+        
+            if recipe['ingredients']:
+                # Show first 3 ingredients
+                for i, ingredient in enumerate(recipe['ingredients'][:3], 1):
+                    print(f"  {i}. {ingredient}")
+            
+                # Show count of remaining
+                if len(recipe['ingredients']) > 3:
+                    remaining = len(recipe['ingredients']) - 3
+                    print(f"  ... and {remaining} more")
             else:
-                raise ValueError(f"Invalid file format")
-            print(f"Successfully parsed: {recipe['name']}")
+                print("     Warning: No ingredients found!")
+        
+            print(f"\nDirections preview:")
+            directions = recipe['directions']
+            if isinstance(directions, list):
+                print(f"  {len(directions)} steps")
+                if directions:
+                    print(f"  1. {directions[0][:80]}...")
+            else:
+                preview = directions[:100] if len(directions) > 100 else directions
+                print(f"  {preview}...")
+            # -------------------------------------------------------
+
+            # ----- added during bug fixes: confirmation -----
+            print(f"\n{'-'*60}")
+            confirm = input("Import this recipe? (y/n) : ").strip().lower()
+            if confirm == 'n':
+                print("Recipe import cancelled.")
+                return
+            # ------------------------------------------------
             
         except FileNotFoundError:
             print(f"File not found: {filepath}")
@@ -323,6 +376,36 @@ class CornucopiaApp:
             print(f"Error: {e}")
             return
         
+        # ------ added during bug fixes: fuzzy matching for partial name entry ------
+        if recipe is None: # trying to find partial matches
+            all_recipes = self.recipe_book.list_recipe_names()
+            matches = [r for r in all_recipes if recipe_name.lower() in r.lower()]
+            if not matches:
+                print(f"Recupe '{recipe_name}' not found.")
+                return
+            elif len(matches) == 1: # only one match; use it
+                recipe_name = matches[0]
+                recipe = self.recipe_book.get_recipe(recipe_name)
+                print(f"     Found: {recipe_name}")
+            else: # multiple matches; let user choose
+                print(f"\nMultiple matches found for '{recipe_name}':")
+                for i, match in enumerate(matches, 1):
+                    print(f"   {i}. {match}")
+                selection = input("\nSelect recipe number: ").strip()
+
+                try:
+                    idx = int(selection) - 1
+                    if 0 <= idx < len(matches):
+                        recipe_name = matches[idx]
+                        recipe = self.recipe_book.get_recipe(recipe_name)
+                    else:
+                        print("Invalid selection.")
+                        return
+                except ValueError:
+                    print("Please enter a number.")
+                    return
+        # ---------------------------------------------------------------------------
+        
         # Display recipe details
         print("\n" + "="*60)
         print(f"RECIPE: {recipe['name']}")
@@ -331,9 +414,9 @@ class CornucopiaApp:
         # Tags
         tags = recipe.get('tags', [])
         if tags:
-            print(f"\n🏷️  Tags: {', '.join(tags)}")
+            print(f"\n   Tags: {', '.join(tags)}")
         else:
-            print("\n🏷️  Tags: (none)")
+            print("\n   Tags: (none)")
         
         # Ingredients
         print(f"\nIngredients ({len(recipe['ingredients'])}):")
@@ -342,16 +425,26 @@ class CornucopiaApp:
         
         # Directions
         print(f"\nDirections:")
-        print(f"  {recipe['directions'][:200]}..." if len(recipe['directions']) > 200 else f"  {recipe['directions']}")
+        directions = recipe['directions']
+        if isinstance(directions, list):
+            for i, step in enumerate(directions, 1):
+                print(f"   {i}. {step}")
+        else: # display as text (truncate if it's super long)
+            if len(directions) > 200:
+                print(f"  {directions[:200]}...")
+            else:
+                print(f"   {directions}")
         
         # Tag management
         print("\n" + "─"*60)
         print("Tag Management:")
         print("1. Add tag")
         print("2. Remove tag")
-        print("3. Done")
+        print("3. Edit recipe")
+        print("4. Delete this recipe")
+        print("5. Done")
         
-        choice = input("\nEnter choice (1-3): ").strip()
+        choice = input("\nEnter choice (1-5): ").strip()
         
         if choice == '1':
             new_tag = input("Enter tag to add: ").strip()
@@ -389,11 +482,305 @@ class CornucopiaApp:
                 print(f"Tag '{tag_to_remove}' removed from {recipe_name}")
             except Exception as e:
                 print(f"Error: {e}")
+        
+        elif choice == '3': # added new recipe edit functionality in debugging
+            self.edit_recipe_workflow(recipe_name, recipe)
+
+        elif choice == '4': # added delete option in debugging
+            print(f"   WARNING: This will permanently delete '{recipe_name}'")
+            confirm = input("Are you sure? (yes/no): ").strip().lower()
+            if confirm == 'yes':
+                try: 
+                    result = self.recipe_book.remove_recipe(recipe_name)
+                    if result: 
+                        print(f"Recpe '{recipe_name}' deleted successfully")
+                    else:
+                        print(f"Failed to delete recipe")
+                except Exception as e:
+                    print(f"Error deleting recipe: {e}")
+            else:
+                print("Deletion cancelled")
+
+    def edit_recipe_workflow(self, recipe_name: str, recipe: Dict) -> None:
+        """Interactive recipe editing workflow.
+    
+        Args:
+          recipe_name: Current recipe name
+            recipe: Recipe data dictionary
+        """
+        print("\n" + "="*60)
+        print(f"EDIT RECIPE: {recipe_name}")
+        print("="*60)
+    
+        while True:
+            print("\nWhat would you like to edit?")
+            print("1. Recipe name")
+            print("2. Ingredients")
+            print("3. Directions")
+            print("4. Save and exit")
+            print("5. Cancel (discard changes)")
+        
+            choice = input("\nEnter choice (1-5): ").strip()
+        
+            if choice == '1':
+                # Edit recipe name
+                print(f"\nCurrent name: {recipe['name']}")
+                new_name = input("Enter new name (or press Enter to keep): ").strip()
+            
+                if new_name:
+                    # Check if name already exists
+                    if new_name != recipe_name and new_name in self.recipe_book:
+                        print(f"Recipe '{new_name}' already exists")
+                    else:
+                        recipe['name'] = new_name
+                        print(f"Name updated to: {new_name}")
+        
+            elif choice == '2':
+                # Edit ingredients
+                self.edit_ingredients(recipe)
+        
+            elif choice == '3':
+                # Edit directions
+                self.edit_directions(recipe)
+        
+            elif choice == '4':
+                # Save changes
+                try:
+                    # Remove old recipe if name changed
+                    if recipe['name'] != recipe_name:
+                        self.recipe_book.remove_recipe(recipe_name)
+                        self.recipe_book.add_recipe(recipe)
+                        print(f"✓ Recipe saved as '{recipe['name']}'")
+                    else:
+                        self.recipe_book.update_recipe(recipe_name, recipe)
+                        print(f"✓ Changes saved to '{recipe_name}'")
+                    break
+                except Exception as e:
+                    print(f"✗ Error saving recipe: {e}")
+        
+            elif choice == '5':
+                print("Changes discarded")
+                break
+        
+            else:
+                print("Invalid choice")
+
+
+    def edit_ingredients(self, recipe: Dict) -> None:
+        """Edit recipe ingredients interactively.
+        
+        Args:
+            recipe: Recipe dictionary to modify
+        """
+        while True:
+            print("\n" + "─"*40)
+            print("EDIT INGREDIENTS")
+            print("─"*40)
+            print(f"Current ingredients ({len(recipe['ingredients'])}):")
+
+            for i, ingredient in enumerate(recipe['ingredients'], 1):
+                print(f"  {i}. {ingredient}")
+        
+            print("\nOptions:")
+            print("1. Add ingredient")
+            print("2. Remove ingredient")
+            print("3. Edit ingredient")
+            print("4. Clear all (start fresh)")
+            print("5. Done editing ingredients")
+        
+            choice = input("\nEnter choice (1-5): ").strip()
+        
+            if choice == '1':
+                # Add ingredient
+                new_ingredient = input("Enter new ingredient: ").strip()
+                if new_ingredient:
+                    recipe['ingredients'].append(new_ingredient)
+                    print(f"Added: {new_ingredient}")
+        
+            elif choice == '2':
+                # Remove ingredient
+                try:
+                    num = int(input("Enter ingredient number to remove: ").strip())
+                    if 1 <= num <= len(recipe['ingredients']):
+                        removed = recipe['ingredients'].pop(num - 1)
+                        print(f"Removed: {removed}")
+                    else:
+                        print("Invalid number")
+                except ValueError:
+                    print("Please enter a number")
+        
+            elif choice == '3':
+                # Edit ingredient
+                try:
+                    num = int(input("Enter ingredient number to edit: ").strip())
+                    if 1 <= num <= len(recipe['ingredients']):
+                        current = recipe['ingredients'][num - 1]
+                        print(f"\nCurrent: {current}")
+                        new_text = input("Enter new text: ").strip()
+                        if new_text:
+                            recipe['ingredients'][num - 1] = new_text
+                            print(f"Updated")
+                    else:
+                        print("Invalid number")
+                except ValueError:
+                    print("Please enter a number")
+        
+            elif choice == '4':
+                # Clear all
+                confirm = input("WARNING: Clear all ingredients? (yes/no): ").strip().lower()
+                if confirm == 'yes':
+                    recipe['ingredients'] = []
+                    print("All ingredients cleared")
+        
+            elif choice == '5':
+                break
+        
+            else:
+                print("Invalid choice")
+
+
+    def edit_directions(self, recipe: Dict) -> None:
+        """Edit recipe directions interactively.
+    
+        Args:
+            recipe: Recipe dictionary to modify
+        """
+        print("\n" + "─"*40)
+        print("EDIT DIRECTIONS")
+        print("─"*40)
+    
+        directions = recipe['directions']
+    
+        # Handle both string and list formats
+        if isinstance(directions, list):
+            print("\nCurrent directions:")
+            for i, step in enumerate(directions, 1):
+                print(f"  {i}. {step}")
+        
+            print("\nEnter 'list' to edit as list, or 'text' to convert to paragraph:")
+            mode = input("Mode: ").strip().lower()
+        
+            if mode == 'text':
+                # Convert to paragraph
+                text = ' '.join(directions)
+                print(f"\nCurrent text:\n{text}\n")
+                new_text = input("Enter new directions (or press Enter to keep): ").strip()
+                if new_text:
+                    recipe['directions'] = new_text
+                    print("Directions updated")
+            else:
+                # Edit as list
+                self.edit_directions_list(recipe)
+        else:
+            # String format
+            print(f"\nCurrent directions:\n{directions}\n")
+
+            print("Enter 'edit' to replace, or 'list' to split into steps:")
+            mode = input("Mode: ").strip().lower()
+
+            if mode == 'list':
+                # Split into list
+                print("\nEnter each step on a new line. Type 'done' when finished:")
+                steps = []
+                while True:
+                    step = input(f"Step {len(steps) + 1}: ").strip()
+                    if step.lower() == 'done':
+                        break
+                    if step:
+                        steps.append(step)
+            
+                if steps:
+                    recipe['directions'] = steps
+                    print(f"Split into {len(steps)} steps")
+            else:
+                # Replace text
+                new_text = input("Enter new directions: ").strip()
+                if new_text:
+                    recipe['directions'] = new_text
+                    print("Directions updated")
+
+
+    def edit_directions_list(self, recipe: Dict) -> None:
+        """Edit directions when formatted as list.
+
+        Args:
+            recipe: Recipe dictionary to modify
+        """
+        while True:
+            directions = recipe['directions']
+
+            print(f"\nSteps ({len(directions)}):")
+            for i, step in enumerate(directions, 1):
+                preview = step[:60] + "..." if len(step) > 60 else step
+                print(f"  {i}. {preview}")
+
+            print("\nOptions:")
+            print("1. Add step")
+            print("2. Remove step")
+            print("3. Edit step")
+            print("4. Reorder steps")
+            print("5. Done")
+
+            choice = input("\nEnter choice (1-5): ").strip()
+
+            if choice == '1':
+                new_step = input("Enter new step: ").strip()
+                if new_step:
+                    directions.append(new_step)
+                    print(f"Added step {len(directions)}")
+
+            elif choice == '2':
+                try:
+                    num = int(input("Enter step number to remove: ").strip())
+                    if 1 <= num <= len(directions):
+                        removed = directions.pop(num - 1)
+                        print(f"Removed step")
+                    else:
+                        print("Invalid number")
+                except ValueError:
+                    print("Please enter a number")
+
+            elif choice == '3':
+                try:
+                    num = int(input("Enter step number to edit: ").strip())
+                    if 1 <= num <= len(directions):
+                        print(f"\nCurrent: {directions[num - 1]}")
+                        new_text = input("Enter new text: ").strip()
+                        if new_text:
+                            directions[num - 1] = new_text
+                            print(f"Updated")
+                    else:
+                        print("Invalid number")
+                except ValueError:
+                    print("Please enter a number")
+
+            elif choice == '4':
+                print("Enter new order as comma-separated numbers")
+                print(f"Example: 1,3,2,4 to swap steps 2 and 3")
+                order = input("New order: ").strip()
+
+                try:
+                    indices = [int(x.strip()) - 1 for x in order.split(',')]
+                    if len(indices) == len(directions) and all(0 <= i < len(directions) for i in indices):
+                        recipe['directions'] = [directions[i] for i in indices]
+                        print("Steps reordered")
+                    else:
+                        print("Invalid order")
+                except:
+                    print("Invalid format")
+        
+            elif choice == '5':
+                break
+        
+            else:
+                print("Invalid choice")
+
+
     
     # ═══════════════════════════════════════════════════════════════
     # CREATE SHOPPING LIST
     # ═══════════════════════════════════════════════════════════════
-    
+
     def create_shopping_list_workflow(self) -> None:
         """Handle shopping list creation with multi-day meal planning."""
         print("\n" + "="*60)
@@ -539,26 +926,31 @@ class CornucopiaApp:
             for i, name in enumerate(available_recipes, 1):
                 selected_mark = "✓" if name in selected else " "
                 print(f"[{selected_mark}] {i}. {name}")
-            
-            selection = input("\nEnter recipe number to select (or 'done'): ").strip()
-            
+
+            # ----- added during bug fixes: multi-select recipes for a day w/ comma separation -----
+            print("\n Tip: Enter multiple numbers separated by commas (e.g., '1, 3, 5')")
+            selection = input("Enter recipe number(s) or 'done': ").strip()
             if selection.lower() == 'done':
                 continue
-            
-            try:
-                idx = int(selection) - 1
-                if 0 <= idx < len(available_recipes):
-                    recipe_name = available_recipes[idx]
-                    if recipe_name not in selected:
-                        selected.append(recipe_name)
-                        print(f"Added: {recipe_name}")
+
+            # split by comma and process each selection
+            selections = [s.strip() for s in selection.split(',')]
+
+            for sel in selections:
+                try:
+                    idx = int(sel) - 1
+                    if 0 <= idx < len(available_recipes):
+                        recipe_name = available_recipes[idx]
+                        if recipe_name not in selected:
+                            selected.append(recipe_name)
+                            print(f"     Added: {recipe_name}")
+                        else:
+                            print(f"     (Already selected: {recipe_name})")
                     else:
-                        print(f"  (Already selected: {recipe_name})")
-                else:
-                    print("Invalid recipe number.")
-            except ValueError:
-                print("Please enter a valid number.")
-        
+                        print(f"     Invalid recipe number: {sel}")
+                except ValueError:
+                    print(f"     Invalid input: {sel} (must be a number)")
+            # --------------------------------------------------------------------------------------
         return selected
     
     def get_servings_input(self, recipe_name: str) -> int:
@@ -789,8 +1181,9 @@ class CornucopiaApp:
         title_input = input("  Custom title [Shopping List]: ").strip()
         title = title_input if title_input else "Shopping List"
         
-        if recipe_names:
-            title += f"\nRecipes: {', '.join(recipe_names)}"
+        # this was giving us buggy pdf title formatting but I'm not deleting the code (yet)
+        #if recipe_names:
+            #title += f"\nRecipes: {', '.join(recipe_names)}"
         
         # Perform export
         try:
@@ -799,7 +1192,10 @@ class CornucopiaApp:
             if format_input == 'csv':
                 export_to_csv(shopping_list, filepath, categorize=categorize)
             elif format_input == 'pdf':
-                export_to_pdf(shopping_list, filepath, title=title, categorize=categorize)
+                export_to_pdf(shopping_list, filepath, title=title, categorize=categorize, recipe_names=recipe_names)
+                # adds recipe metadata after export
+                if recipe_names:
+                    print(f"   Recipes: {', '.join(recipe_names)}")
             elif format_input == 'txt':
                 export_to_txt(shopping_list, filepath, title=title, categorize=categorize)
             

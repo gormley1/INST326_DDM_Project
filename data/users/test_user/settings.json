@@ -1,0 +1,10 @@
+{
+  "default_servings": 2,
+  "preferred_stores": [
+    "safeway",
+    "giant",
+    "trader_joes"
+  ],
+  "default_export_format": "txt",
+  "export_directory": "exports"
+}

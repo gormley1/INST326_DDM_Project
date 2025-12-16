@@ -40,24 +40,78 @@ class RecipeParser(ABC):
 
     def extract_ingredients_section(self, text: str) -> List[str]:
         """
-        Extract ingredient lines located between 'Ingredients:' and 'Directions:'.
+        Extract ingredient lines from recipe text, including table formats.
+        
+        Enhanced for Project 4 to handle:
+        - Traditional bullet list format
+        - Table format with "Ingredient | Weight | Measure" columns
+        - Institutional/commerical recipe formats
+
+        Args:
+            text (str): Raw recipe text
+
+        Returns:
+            List[str]: Cleaned ingredient lines
         """
         lines = text.split("\n")
         ingredients = []
         in_section = False
 
-        for line in lines:
+# https://www.w3schools.com/python/gloss_python_regex_metacharacters.asp 
+        # Patterns for detecting ingredient section start
+        ingredients_headers = [r"^ingredient?:?$", 
+                               r"^ingredient\s+weight\s+measure", 
+                               r"^ingredient$"]
+        # Patterns for detecting section end
+        end_patterns = [r"^directions?|instructions?|steps?|method?|):?$",
+                        r"^\s*method\s*$",
+                        r"^\s*\d+\s*$"] # if the steps are numbered
+        # Words that indicate we're NOT in ingredients section anymore
+        stop_words = ['method', 'directions', 'instructions', 'steps', 'calories', 'yield', 'portion', 'nutrition']
+
+        # really need cleaner definitions for how to parse ingredients in varied formats properly if this bug is ever going to be solved
+        # Claude suggested something like skip_keywords below, but I think that creates more problems:
+        skip_keywords = [
+            'ingredient', 'weight', 'measure', 'issue', 'quantity', 'unit',
+            'calories', 'protein', 'fat', 'carbohydrate', 'cholesterol',
+            'sodium', 'calcium', 'yield', 'portion', 'ounces', 'meat',
+            'fish', 'poultry', 'breast', 'boneless', 'method', 'direction'
+        ]
+        # I think the biggest problem with this stuff is that we're mostly skipping LINES, not characters/strings (and therefore not targetting the right ones)
+
+        for i, line in enumerate(lines):
             clean = line.strip()
-
-            if re.match(r"^ingredients?:?$", clean, re.IGNORECASE):
-                in_section = True
-                continue
-
-            if re.match(r"^(directions?|instructions?|steps?):?$", clean, re.IGNORECASE):
-                break
-
+            #if entering ingredients section
+            for pattern in ingredients_headers:
+                if re.match(pattern, clean, re.IGNORECASE):
+                    in_section = True
+                    continue
+            # if leaving ingredients section
+            if in_section: 
+                for pattern in end_patterns:
+                    if re.match(pattern, clean, re.IGNORECASE):
+                        in_section = False
+                        break
+                if any(word in clean.lower() for word in stop_words):
+                    in_section = False
+                    continue
+            # extract ingredient if in section
             if in_section and clean:
-                clean = re.sub(r"^[\-•*]\s*", "", clean)
+                skip_lines = ['ingredient', 'weight', 'measure', 'issue', 'quantity', 'unit', 'amount']
+                if clean.lower() in skip_lines:
+                    continue
+            clean = re.sub(r"[\-~+•*◦▪▫→]\s*|>>\s*|-->\s*|->\s*", "", clean) 
+
+            # this block only extracts ingredient name part for table format; 
+            # leaving it commented out bc I worry it'll break the ingredient measurement + summation
+
+            # if the line has measureents, after ingredient name, extract just the ingredient part
+            """ if any(unit in clean for unit in [' lbs', ' oz', ' gal', ' cup', ' tbsp', ' tsp']):
+                parts = re.split(r'\s+\d+[\-\d/]*\s+(lbs?|oz|gal|cup|tbsp|tsp)', clean)
+                if parts and len(parts[0]) > 3:
+                    clean = parts[0].strip()
+            """
+            if len(clean) > 3:
                 ingredients.append(clean)
 
         return ingredients
@@ -137,6 +191,7 @@ class PDFRecipeParser(RecipeParser):
             return False
 
     def parse(self) -> Dict:
+        """Parses a PDF file into recipe data w/ broader functionality for ingredient extraction"""
         if not self.validate_format():
             raise ValueError(f"Invalid PDF file: {self.filepath}")
 
@@ -150,10 +205,26 @@ class PDFRecipeParser(RecipeParser):
                     full_text += txt + "\n"
 
         lines = [l.strip() for l in full_text.split("\n") if l.strip()]
-        name = lines[0] if lines else "Untitled Recipe"
 
-        ingredients = [self.clean_ingredient_text(i)
-                       for i in self.extract_ingredients_section(full_text)]
+        # ----- added during debugging: looking for recipe title in first few lines, extracting name -----
+        name = "Untitled Recipe"
+        for line in lines[:5]:
+            # this might cause some bugs but users can rename it anyways if it's a problem
+            if any(word in line.lower() for word in ['dairy', 'meat', 'poultry', 'no.', 'yield', 'portion']):
+                continue
+            if line.isupper() or line.istitle():
+                if 10 < len(line) < 100:
+                    name = line 
+                    break
+        
+        if name == "Untitled Recipe" and lines:
+            name = lines[0]
+
+        ingredients = self.extract_ingredients_section(full_text)
+
+
+
+        # ------------------------------------------------------------------------------------------------
 
         # Directions
         directions = []
@@ -163,7 +234,10 @@ class PDFRecipeParser(RecipeParser):
                 in_directions = True
                 continue
             if in_directions:
-                directions.append(line)
+                if any(word in line.lower() for word in ['calories', 'nutriotion', 'yield']):
+                    break
+                if line and not line.isdigit():
+                    directions.append(line)
 
         self.recipe_data = {
             "name": name,

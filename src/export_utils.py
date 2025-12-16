@@ -92,7 +92,7 @@ def export_to_csv(shopping_list: dict, filename: str, include_prices: bool = Tru
 
 
 # export_to_pdf - (Matt)
-def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping List") -> bool:
+def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping List", categorize: bool = True, recipe_names: list = None) -> bool:
     """
     Generate PDF shopping list organized by category.
     
@@ -100,6 +100,7 @@ def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping Lis
         shopping_list (dict): Shopping list from compile_shopping_list()
         filename (str): Output PDF file path
         title (str): Document title (default: "Shopping List")
+        categorize (bool): Organize by category (default: True)
     
     Returns:
         bool: True if successful
@@ -122,8 +123,11 @@ def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping Lis
     from datetime import datetime
     
     try:
-        # Group by category
-        categorized = group_items_by_category(shopping_list)
+        # Group by category if requested
+        if categorize:
+            categorized = group_items_by_category(shopping_list)
+        else:
+            categorized = {'Items': shopping_list}
         
         # Ensure parent directory exists
         output_path = Path(filename)
@@ -140,21 +144,56 @@ def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping Lis
         pdf.set_font('Arial', '', 10)
         date_str = datetime.now().strftime('%B %d, %Y')
         pdf.cell(0, 8, f"Generated: {date_str}", ln=True, align='C')
+
+        # Recipe list as separate line
+        if recipe_names:
+            pdf.set_font('Arial', 'I', 9)
+            recipes_text = f"Recipes: {', '.join(recipe_names)}"
+            # word wrap if it's too long
+            if len(recipes_text) > 100:
+                # split it into chunks
+                words = recipes_text.split(', ')
+                line = words[0] + ', '
+                for word in words[0] + ', ':
+                    if len(line + word) > 95:
+                        pdf.cell(0, 5, line.rstrip(', '), ln=True, align='L')
+                        line = '          ' + word + ", "
+                    else:
+                        line += word + ', '
+                pdf.cell(0, 5, line.rstrip(', '), ln = True, align='L')
+            else:
+                pdf.cell(0, 6, recipes_text, ln=True, align='L')
+                
+        # last version recipe split handling
+        #if '\n' in title and title.startswith('Shopping List'):
+        #    lines = title.split('\n')
+        #    if len(lines) > 1 and lines[1].startswith('Recipes:'):
+        #        pdf.set_font('Arial', 'I', 10)
+        #        pdf.cell(0, 6, lines[1], ln=True, align='L')
+
         pdf.ln(5)
         
         # Track total
         total_price = 0.0
+
+        # -------- categorization option handling added during bug fixes -------
+        if categorize:
+            items_to_display = group_items_by_category(shopping_list)
+        else: #simple alphabetical list w/out categories
+            items_to_display = {'Items': shopping_list}
+        # ----------------------------------------------------------------------
         
         # Process each category
-        for category, items in categorized.items():
+        for category, items in items_to_display.items():
             if not items:
                 continue
             
-            # Category header
-            pdf.set_font('Arial', 'B', 14)
-            pdf.set_fill_color(230, 230, 250)
-            pdf.cell(0, 10, f"  {category}", ln=True, fill=True)
-            pdf.ln(2)
+            # Category header (only if categorized)
+            if categorize:
+                pdf.set_font('Arial', 'B', 14)
+                pdf.set_fill_color(230, 230, 250)
+                pdf.cell(0, 10, f"  {category}", ln=True, fill=True)
+                pdf.ln(2)
             
             # Items in this category
             pdf.set_font('Arial', '', 10)
