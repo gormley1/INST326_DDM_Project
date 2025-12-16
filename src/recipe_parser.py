@@ -69,6 +69,16 @@ class RecipeParser(ABC):
         # Words that indicate we're NOT in ingredients section anymore
         stop_words = ['method', 'directions', 'instructions', 'steps', 'calories', 'yield', 'portion', 'nutrition']
 
+        # really need cleaner definitions for how to parse ingredients in varied formats properly if this bug is ever going to be solved
+        # Claude suggested something like skip_keywords below, but I think that creates more problems:
+        skip_keywords = [
+            'ingredient', 'weight', 'measure', 'issue', 'quantity', 'unit',
+            'calories', 'protein', 'fat', 'carbohydrate', 'cholesterol',
+            'sodium', 'calcium', 'yield', 'portion', 'ounces', 'meat',
+            'fish', 'poultry', 'breast', 'boneless', 'method', 'direction'
+        ]
+        # I think the biggest problem with this stuff is that we're mostly skipping LINES, not characters/strings (and therefore not targetting the right ones)
+
         for i, line in enumerate(lines):
             clean = line.strip()
             #if entering ingredients section

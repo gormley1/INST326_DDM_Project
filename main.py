@@ -440,9 +440,9 @@ class CornucopiaApp:
         print("Tag Management:")
         print("1. Add tag")
         print("2. Remove tag")
-        #print("3. Edit recipe")
-        print("3. Delete this recipe")
-        print("4. Done")
+        print("3. Edit recipe")
+        print("4. Delete this recipe")
+        print("5. Done")
         
         choice = input("\nEnter choice (1-5): ").strip()
         
@@ -483,10 +483,10 @@ class CornucopiaApp:
             except Exception as e:
                 print(f"Error: {e}")
         
-        #elif choice == '3': # added new recipe edit functionality in debugging
-            #self.edit_recipe_workflow(recipe_name, recipe)
+        elif choice == '3': # added new recipe edit functionality in debugging
+            self.edit_recipe_workflow(recipe_name, recipe)
 
-        elif choice == '3': # added delete option in debugging
+        elif choice == '4': # added delete option in debugging
             print(f"   WARNING: This will permanently delete '{recipe_name}'")
             confirm = input("Are you sure? (yes/no): ").strip().lower()
             if confirm == 'yes':
@@ -500,18 +500,287 @@ class CornucopiaApp:
                     print(f"Error deleting recipe: {e}")
             else:
                 print("Deletion cancelled")
+
+    def edit_recipe_workflow(self, recipe_name: str, recipe: Dict) -> None:
+        """Interactive recipe editing workflow.
+    
+        Args:
+          recipe_name: Current recipe name
+            recipe: Recipe data dictionary
+        """
+        print("\n" + "="*60)
+        print(f"EDIT RECIPE: {recipe_name}")
+        print("="*60)
+    
+        while True:
+            print("\nWhat would you like to edit?")
+            print("1. Recipe name")
+            print("2. Ingredients")
+            print("3. Directions")
+            print("4. Save and exit")
+            print("5. Cancel (discard changes)")
+        
+            choice = input("\nEnter choice (1-5): ").strip()
+        
+            if choice == '1':
+                # Edit recipe name
+                print(f"\nCurrent name: {recipe['name']}")
+                new_name = input("Enter new name (or press Enter to keep): ").strip()
+            
+                if new_name:
+                    # Check if name already exists
+                    if new_name != recipe_name and new_name in self.recipe_book:
+                        print(f"Recipe '{new_name}' already exists")
+                    else:
+                        recipe['name'] = new_name
+                        print(f"Name updated to: {new_name}")
+        
+            elif choice == '2':
+                # Edit ingredients
+                self.edit_ingredients(recipe)
+        
+            elif choice == '3':
+                # Edit directions
+                self.edit_directions(recipe)
+        
+            elif choice == '4':
+                # Save changes
+                try:
+                    # Remove old recipe if name changed
+                    if recipe['name'] != recipe_name:
+                        self.recipe_book.remove_recipe(recipe_name)
+                        self.recipe_book.add_recipe(recipe)
+                        print(f"✓ Recipe saved as '{recipe['name']}'")
+                    else:
+                        self.recipe_book.update_recipe(recipe_name, recipe)
+                        print(f"✓ Changes saved to '{recipe_name}'")
+                    break
+                except Exception as e:
+                    print(f"✗ Error saving recipe: {e}")
+        
+            elif choice == '5':
+                print("Changes discarded")
+                break
+        
+            else:
+                print("Invalid choice")
+
+
+    def edit_ingredients(self, recipe: Dict) -> None:
+        """Edit recipe ingredients interactively.
+        
+        Args:
+            recipe: Recipe dictionary to modify
+        """
+        while True:
+            print("\n" + "─"*40)
+            print("EDIT INGREDIENTS")
+            print("─"*40)
+            print(f"Current ingredients ({len(recipe['ingredients'])}):")
+
+            for i, ingredient in enumerate(recipe['ingredients'], 1):
+                print(f"  {i}. {ingredient}")
+        
+            print("\nOptions:")
+            print("1. Add ingredient")
+            print("2. Remove ingredient")
+            print("3. Edit ingredient")
+            print("4. Clear all (start fresh)")
+            print("5. Done editing ingredients")
+        
+            choice = input("\nEnter choice (1-5): ").strip()
+        
+            if choice == '1':
+                # Add ingredient
+                new_ingredient = input("Enter new ingredient: ").strip()
+                if new_ingredient:
+                    recipe['ingredients'].append(new_ingredient)
+                    print(f"Added: {new_ingredient}")
+        
+            elif choice == '2':
+                # Remove ingredient
+                try:
+                    num = int(input("Enter ingredient number to remove: ").strip())
+                    if 1 <= num <= len(recipe['ingredients']):
+                        removed = recipe['ingredients'].pop(num - 1)
+                        print(f"Removed: {removed}")
+                    else:
+                        print("Invalid number")
+                except ValueError:
+                    print("Please enter a number")
+        
+            elif choice == '3':
+                # Edit ingredient
+                try:
+                    num = int(input("Enter ingredient number to edit: ").strip())
+                    if 1 <= num <= len(recipe['ingredients']):
+                        current = recipe['ingredients'][num - 1]
+                        print(f"\nCurrent: {current}")
+                        new_text = input("Enter new text: ").strip()
+                        if new_text:
+                            recipe['ingredients'][num - 1] = new_text
+                            print(f"Updated")
+                    else:
+                        print("Invalid number")
+                except ValueError:
+                    print("Please enter a number")
+        
+            elif choice == '4':
+                # Clear all
+                confirm = input("WARNING: Clear all ingredients? (yes/no): ").strip().lower()
+                if confirm == 'yes':
+                    recipe['ingredients'] = []
+                    print("All ingredients cleared")
+        
+            elif choice == '5':
+                break
+        
+            else:
+                print("Invalid choice")
+
+
+    def edit_directions(self, recipe: Dict) -> None:
+        """Edit recipe directions interactively.
+    
+        Args:
+            recipe: Recipe dictionary to modify
+        """
+        print("\n" + "─"*40)
+        print("EDIT DIRECTIONS")
+        print("─"*40)
+    
+        directions = recipe['directions']
+    
+        # Handle both string and list formats
+        if isinstance(directions, list):
+            print("\nCurrent directions:")
+            for i, step in enumerate(directions, 1):
+                print(f"  {i}. {step}")
+        
+            print("\nEnter 'list' to edit as list, or 'text' to convert to paragraph:")
+            mode = input("Mode: ").strip().lower()
+        
+            if mode == 'text':
+                # Convert to paragraph
+                text = ' '.join(directions)
+                print(f"\nCurrent text:\n{text}\n")
+                new_text = input("Enter new directions (or press Enter to keep): ").strip()
+                if new_text:
+                    recipe['directions'] = new_text
+                    print("Directions updated")
+            else:
+                # Edit as list
+                self.edit_directions_list(recipe)
+        else:
+            # String format
+            print(f"\nCurrent directions:\n{directions}\n")
+
+            print("Enter 'edit' to replace, or 'list' to split into steps:")
+            mode = input("Mode: ").strip().lower()
+
+            if mode == 'list':
+                # Split into list
+                print("\nEnter each step on a new line. Type 'done' when finished:")
+                steps = []
+                while True:
+                    step = input(f"Step {len(steps) + 1}: ").strip()
+                    if step.lower() == 'done':
+                        break
+                    if step:
+                        steps.append(step)
+            
+                if steps:
+                    recipe['directions'] = steps
+                    print(f"Split into {len(steps)} steps")
+            else:
+                # Replace text
+                new_text = input("Enter new directions: ").strip()
+                if new_text:
+                    recipe['directions'] = new_text
+                    print("Directions updated")
+
+
+    def edit_directions_list(self, recipe: Dict) -> None:
+        """Edit directions when formatted as list.
+
+        Args:
+            recipe: Recipe dictionary to modify
+        """
+        while True:
+            directions = recipe['directions']
+
+            print(f"\nSteps ({len(directions)}):")
+            for i, step in enumerate(directions, 1):
+                preview = step[:60] + "..." if len(step) > 60 else step
+                print(f"  {i}. {preview}")
+
+            print("\nOptions:")
+            print("1. Add step")
+            print("2. Remove step")
+            print("3. Edit step")
+            print("4. Reorder steps")
+            print("5. Done")
+
+            choice = input("\nEnter choice (1-5): ").strip()
+
+            if choice == '1':
+                new_step = input("Enter new step: ").strip()
+                if new_step:
+                    directions.append(new_step)
+                    print(f"Added step {len(directions)}")
+
+            elif choice == '2':
+                try:
+                    num = int(input("Enter step number to remove: ").strip())
+                    if 1 <= num <= len(directions):
+                        removed = directions.pop(num - 1)
+                        print(f"Removed step")
+                    else:
+                        print("Invalid number")
+                except ValueError:
+                    print("Please enter a number")
+
+            elif choice == '3':
+                try:
+                    num = int(input("Enter step number to edit: ").strip())
+                    if 1 <= num <= len(directions):
+                        print(f"\nCurrent: {directions[num - 1]}")
+                        new_text = input("Enter new text: ").strip()
+                        if new_text:
+                            directions[num - 1] = new_text
+                            print(f"Updated")
+                    else:
+                        print("Invalid number")
+                except ValueError:
+                    print("Please enter a number")
+
+            elif choice == '4':
+                print("Enter new order as comma-separated numbers")
+                print(f"Example: 1,3,2,4 to swap steps 2 and 3")
+                order = input("New order: ").strip()
+
+                try:
+                    indices = [int(x.strip()) - 1 for x in order.split(',')]
+                    if len(indices) == len(directions) and all(0 <= i < len(directions) for i in indices):
+                        recipe['directions'] = [directions[i] for i in indices]
+                        print("Steps reordered")
+                    else:
+                        print("Invalid order")
+                except:
+                    print("Invalid format")
+        
+            elif choice == '5':
+                break
+        
+            else:
+                print("Invalid choice")
+
+
     
     # ═══════════════════════════════════════════════════════════════
     # CREATE SHOPPING LIST
     # ═══════════════════════════════════════════════════════════════
-    
-    #def edit_recipe_workflow(self, recipe_name: str, recipe: Dict) -> None:
-        """Interactive recipe editing workflow for users
-        
-        Args:
-            recipe_name: Current recipe name
-            recipe: Recipe data dictionary
-        """
+
     def create_shopping_list_workflow(self) -> None:
         """Handle shopping list creation with multi-day meal planning."""
         print("\n" + "="*60)
@@ -912,8 +1181,9 @@ class CornucopiaApp:
         title_input = input("  Custom title [Shopping List]: ").strip()
         title = title_input if title_input else "Shopping List"
         
-        if recipe_names:
-            title += f"\nRecipes: {', '.join(recipe_names)}"
+        # this was giving us buggy pdf title formatting but I'm not deleting the code (yet)
+        #if recipe_names:
+            #title += f"\nRecipes: {', '.join(recipe_names)}"
         
         # Perform export
         try:
@@ -922,7 +1192,10 @@ class CornucopiaApp:
             if format_input == 'csv':
                 export_to_csv(shopping_list, filepath, categorize=categorize)
             elif format_input == 'pdf':
-                export_to_pdf(shopping_list, filepath, title=title, categorize=categorize)
+                export_to_pdf(shopping_list, filepath, title=title, categorize=categorize, recipe_names=recipe_names)
+                # adds recipe metadata after export
+                if recipe_names:
+                    print(f"   Recipes: {', '.join(recipe_names)}")
             elif format_input == 'txt':
                 export_to_txt(shopping_list, filepath, title=title, categorize=categorize)
             

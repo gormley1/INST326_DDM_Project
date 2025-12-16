@@ -92,7 +92,7 @@ def export_to_csv(shopping_list: dict, filename: str, include_prices: bool = Tru
 
 
 # export_to_pdf - (Matt)
-def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping List", categorize: bool = True) -> bool:
+def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping List", categorize: bool = True, recipe_names: list = None) -> bool:
     """
     Generate PDF shopping list organized by category.
     
@@ -123,8 +123,11 @@ def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping Lis
     from datetime import datetime
     
     try:
-        # Group by category (commented out during bug fixing)
-        #categorized = group_items_by_category(shopping_list)
+        # Group by category if requested
+        if categorize:
+            categorized = group_items_by_category(shopping_list)
+        else:
+            categorized = {'Items': shopping_list}
         
         # Ensure parent directory exists
         output_path = Path(filename)
@@ -141,6 +144,33 @@ def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping Lis
         pdf.set_font('Arial', '', 10)
         date_str = datetime.now().strftime('%B %d, %Y')
         pdf.cell(0, 8, f"Generated: {date_str}", ln=True, align='C')
+
+        # Recipe list as separate line
+        if recipe_names:
+            pdf.set_font('Arial', 'I', 9)
+            recipes_text = f"Recipes: {', '.join(recipe_names)}"
+            # word wrap if it's too long
+            if len(recipes_text) > 100:
+                # split it into chunks
+                words = recipes_text.split(', ')
+                line = words[0] + ', '
+                for word in words[0] + ', ':
+                    if len(line + word) > 95:
+                        pdf.cell(0, 5, line.rstrip(', '), ln=True, align='L')
+                        line = '          ' + word + ", "
+                    else:
+                        line += word + ', '
+                pdf.cell(0, 5, line.rstrip(', '), ln = True, align='L')
+            else:
+                pdf.cell(0, 6, recipes_text, ln=True, align='L')
+                
+        # last version recipe split handling
+        #if '\n' in title and title.startswith('Shopping List'):
+        #    lines = title.split('\n')
+        #    if len(lines) > 1 and lines[1].startswith('Recipes:'):
+        #        pdf.set_font('Arial', 'I', 10)
+        #        pdf.cell(0, 6, lines[1], ln=True, align='L')
+
         pdf.ln(5)
         
         # Track total
