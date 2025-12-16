@@ -1310,7 +1310,7 @@ def main():
     except KeyboardInterrupt:
         print("\n\nApplication interrupted. Goodbye!")
     except Exception as e:
-        print(f"\n✗ Unexpected error: {e}")
+        print(f"\nUnexpected error: {e}")
         raise
 
 

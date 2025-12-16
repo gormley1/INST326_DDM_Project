@@ -83,7 +83,7 @@ def export_to_csv(shopping_list: dict, filename: str, include_prices: bool = Tru
                     
                     writer.writerow(row)
         
-        print(f"✓ Shopping list exported to {filename}")
+        print(f"Shopping list exported to {filename}")
         return True
     
     except Exception as e:
@@ -231,7 +231,7 @@ def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping Lis
         
         # Save
         pdf.output(filename)
-        print(f"✓ PDF exported to {filename}")
+        print(f"PDF exported to {filename}")
         return True
     
     except Exception as e:
@@ -308,7 +308,7 @@ def export_to_txt(shopping_list: dict, filename: str, title: str = "Shopping Lis
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(full_content)
         
-        print(f"✓ Text file exported to {filename}")
+        print(f"Text file exported to {filename}")
         return True
     
     except Exception as e:
