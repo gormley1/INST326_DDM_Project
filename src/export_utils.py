@@ -92,7 +92,7 @@ def export_to_csv(shopping_list: dict, filename: str, include_prices: bool = Tru
 
 
 # export_to_pdf - (Matt)
-def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping List") -> bool:
+def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping List", categorize: bool = True) -> bool:
     """
     Generate PDF shopping list organized by category.
     
@@ -100,6 +100,7 @@ def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping Lis
         shopping_list (dict): Shopping list from compile_shopping_list()
         filename (str): Output PDF file path
         title (str): Document title (default: "Shopping List")
+        categorize (bool): Organize by category (default: True)
     
     Returns:
         bool: True if successful
@@ -122,8 +123,8 @@ def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping Lis
     from datetime import datetime
     
     try:
-        # Group by category
-        categorized = group_items_by_category(shopping_list)
+        # Group by category (commented out during bug fixing)
+        #categorized = group_items_by_category(shopping_list)
         
         # Ensure parent directory exists
         output_path = Path(filename)
@@ -144,17 +145,25 @@ def export_to_pdf(shopping_list: dict, filename: str, title: str = "Shopping Lis
         
         # Track total
         total_price = 0.0
+
+        # -------- categorization option handling added during bug fixes -------
+        if categorize:
+            items_to_display = group_items_by_category(shopping_list)
+        else: #simple alphabetical list w/out categories
+            items_to_display = {'Items': shopping_list}
+        # ----------------------------------------------------------------------
         
         # Process each category
-        for category, items in categorized.items():
+        for category, items in items_to_display.items():
             if not items:
                 continue
             
-            # Category header
-            pdf.set_font('Arial', 'B', 14)
-            pdf.set_fill_color(230, 230, 250)
-            pdf.cell(0, 10, f"  {category}", ln=True, fill=True)
-            pdf.ln(2)
+            # Category header (only if categorized)
+            if categorize:
+                pdf.set_font('Arial', 'B', 14)
+                pdf.set_fill_color(230, 230, 250)
+                pdf.cell(0, 10, f"  {category}", ln=True, fill=True)
+                pdf.ln(2)
             
             # Items in this category
             pdf.set_font('Arial', '', 10)

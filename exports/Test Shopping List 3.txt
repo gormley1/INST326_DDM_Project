@@ -1,0 +1,140 @@
+Test Shopping List 3
+Recipes: Classic Scrambled Eggs, Turkey Club Sandwich, Basic Chicken Parmesan
+Generated: December 15, 2025 at 08:09 PM
+==================================================
+
+
+==================================================
+  PRODUCE
+==================================================
+
+[ ] 2.0 each 1/4 Tsp Black Pepper --- used in Classic Scrambled Eggs
+
+[ ] 2.0 leaves Lettuce --- used in Turkey Club Sandwich
+
+[ ] 4.0 each Pepper,B Lack,Gr Ound --- used in Basic Chicken Parmesan
+
+[ ] 2.0 slices Tomato --- used in Turkey Club Sandwich
+
+
+==================================================
+  DAIRY
+==================================================
+
+[ ] 2.0 tbsp Butter --- used in Classic Scrambled Eggs
+
+[ ] 2.0 slices Cheddar Cheese --- used in Turkey Club Sandwich
+
+[ ] 4.0 each Cheese,Mo Zzar Ella ,Part Skim --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Cheese,Parmesan,Grat Ed Issue Measu Re Weight --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Chi Cken Parmesan (Breast Boneless) --- used in Basic Chicken Parmesan
+
+[ ] 8.0 large Eggs --- used in Classic Scrambled Eggs
+
+[ ] 4.0 tbsp Milk --- used in Classic Scrambled Eggs
+
+[ ] 4.0 tbsp Shredded Cheese --- used in Classic Scrambled Eggs
+
+[ ] 4.0 each Sprin Kle Abou T 1/3 Cu P Par Mesan Cheese Evenly Over Ch Icken Breas Ts In Each Pan. --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Using A Conv Ection Oven, Bake At 325 F. An Addition Al 46 Minutes Cheese Melts On High Fan, Closed Vent. C Cp: Internal --- used in Basic Chicken Parmesan
+
+
+==================================================
+  MEAT & SEAFOOD
+==================================================
+
+[ ] 4.0 each 8Wash Chicken Breasts Thoroughly Under Cold Running Water. Drain Well. --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Add Herbs To Sauce; Stir. L Adle Abou T 1/4 Cu P Of Sauce Ov Er Each Chicken Breas T. --- used in Basic Chicken Parmesan
+
+[ ] 4.0 slices Bacon --- used in Turkey Club Sandwich
+
+[ ] 4.0 each Chicken,B Reast,Bnls/Sknls,5 Oz --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Lightly Spray Chicken Breas Ts In Each Pan With Cook Ing Spray. --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Meat, Fish, And Poultryno.L 051 01 --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Place 1 Oz M Ozzarella Ch Eese On Each Chicken Breas T. --- used in Basic Chicken Parmesan
+
+[ ] 4.0 oz Sliced Turkey Breast --- used in Turkey Club Sandwich
+
+
+==================================================
+  PASTA & GRAINS
+==================================================
+
+[ ] 3.0 slices Whole Wheat Bread --- used in Turkey Club Sandwich
+
+
+==================================================
+  SPICES & SEASONINGS
+==================================================
+
+[ ] 2.0 each 1/4 Tsp Salt --- used in Classic Scrambled Eggs
+
+[ ] 4.0 each Basil,Sweet,Whol E,Cr Ushed --- used in Basic Chicken Parmesan
+
+
+==================================================
+  CONDIMENTS & SAUCES
+==================================================
+
+[ ] 2.0 tbsp Mayonnaise --- used in Turkey Club Sandwich
+
+[ ] 1.0 tbsp Mustard --- used in Turkey Club Sandwich
+
+
+==================================================
+  OTHER
+==================================================
+
+[ ] 8.0 each 1/2 Oz --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each 1/4 Oz --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each 1/4 Tsp --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each 1/8 Oz --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each 167/8 Lbs --- used in Basic Chicken Parmesan
+
+[ ] 4.0 gal 3 Qts --- used in Basic Chicken Parmesan
+
+[ ] 8.0 each 31/3 Tbsp --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each 311/4 Lbs --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Cooking Sp Ray,Nonst Ick --- used in Basic Chicken Parmesan
+
+[ ] 8.0 each Cup --- used in Basic Chicken Parmesan
+
+[ ] 28.0 oz1/4 Cup 1/3 Tbsp --- used in Basic Chicken Parmesan
+
+[ ] 712.0 m G 319 M G 100 M G 8 G 38 G 7 G 261 Cal Calcium Sodium Choles Terol Fat Protein Carbohydrates Calories Yield 100 5 Ou Nces Portion --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Gar Lic Powder --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Ingred Ient --- used in Basic Chicken Parmesan
+
+[ ] 12.0 each Lbs --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Meth Od --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Oreg Ano,Crushed --- used in Basic Chicken Parmesan
+
+[ ] 8.0 each Oz --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Place Ch Icken Breas Ts In Each Lightly Sprayed Sheet Pan . --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Sauce,Pizza ,Canned --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Tbsp --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Temperatu Re Must Reach 165 F . Or Higher For 15 S Econ Ds. Hol D For Service At 140 F . Or Higher. --- used in Basic Chicken Parmesan
+
+[ ] 4.0 each Using A Conv Ection Oven, Bake 8 T O 10 Minutes At 325 F . On High Fan, Closed Vent. --- used in Basic Chicken Parmesan
+

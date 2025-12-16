@@ -206,3 +206,63 @@ def calculate_shopping_list_total(
 
 
 # compare_store_totals
+def compare_store_totals(shopping_list: Dict[str, Dict[str, object]], store_list: list) -> Dict[str, Dict]:
+    """Compare total costs across multiple stores.
+    
+    Args:
+        shopping_list (dict): Shopping list from compile_shopping_list()
+        store_list (list): List of store names to compare (e.g., ['safeway', 'giant'])
+        
+    Returns:
+        dict: Store comparison sorted by total cost (cheapest first)
+            {
+                'giant': {'total': 43.21, 'items_found': 28, 'items_missing': 2},
+                'safeway': {'total': 47.32, 'items_found': 29, 'items_missing': 1},
+                'trader_joes': {'total': 51.15, 'items_found': 27, 'items_missing': 3}
+            }
+    
+    Examples:
+        >>> shopping_list = {'milk': {'quantity': 1, 'unit': 'gallon'}}
+        >>> comparison = compare_store_totals(shopping_list, ['safeway', 'giant', 'trader_joes'])
+        >>> cheapest = list(comparison.keys())[0]
+        >>> print(f"Best store: {cheapest}")
+        Best store: giant
+    """
+    comparison = {}
+    
+    for store_name in store_list:
+        try:
+            # Load store inventory
+            inventory = load_store_data(store_name)
+            
+            # Calculate total for this store
+            result = calculate_shopping_list_total(shopping_list, inventory)
+            
+            comparison[store_name] = {
+                'total': result['total'],
+                'items_found': len(result['itemized']),
+                'items_missing': len(result['not_found'])
+            }
+            
+        except FileNotFoundError:
+            print(f"⚠️  Warning: Could not load data for {store_name}")
+            comparison[store_name] = {
+                'total': float('inf'),  # Mark as unavailable
+                'items_found': 0,
+                'items_missing': len(shopping_list)
+            }
+            
+        except Exception as e:
+            print(f"⚠️  Warning: Error processing {store_name}: {e}")
+            comparison[store_name] = {
+                'total': float('inf'),
+                'items_found': 0,
+                'items_missing': len(shopping_list)
+            }
+    
+    # Sort by total cost (cheapest first)
+    sorted_comparison = dict(
+        sorted(comparison.items(), key=lambda x: x[1]['total'])
+    )
+    
+    return sorted_comparison

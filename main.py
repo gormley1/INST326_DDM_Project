@@ -20,7 +20,7 @@ from src.models.RecipeBook import RecipeBook
 from src.export_utils import export_to_csv, export_to_pdf, export_to_txt, group_items_by_category
 from src.recipe_parser import RecipeParser, TXTRecipeParser, PDFRecipeParser, DOCXRecipeParser
 from src.shopping_list import compile_shopping_list
-# from src.store_data import compare_store_totals
+from src.store_data import compare_store_totals
 
 
 class CornucopiaApp:
@@ -137,7 +137,7 @@ class CornucopiaApp:
     # ═══════════════════════════════════════════════════════════════
     
     def import_recipe_workflow(self) -> None:
-        """Handle recipe import workflow."""
+        """Handle recipe import workflow w/ rename and preview."""
         print("\n" + "="*60)
         print("IMPORT RECIPE")
         print("="*60)
@@ -160,14 +160,67 @@ class CornucopiaApp:
             elif filepath.endswith('.docx'):
                 parser = DOCXRecipeParser(filepath)
             else:
-                raise ValueError(f"Unsupported file format")
+                raise ValueError(f"Unsupported file format. Supported: .txt, .pdf, .docx")
+                return
 
-            # Validate and parse
-            if parser.validate_format():
+            # Validate format and parse
+            if not parser.validate_format():
+                print("Invalid file format")
+                return
+            else: # parse the recipe
                 recipe = parser.parse()
+                print(f"Successfully parsed: {recipe['name']}")
+            
+            # ----- added during bug fixes: offer to rename recipe file -----
+            print(f"\nParsed recipe name: '{recipe['name']}'")
+            rename = input("Rename this recipe? (y/n) : ").strip().lower()
+
+            if rename == 'y':
+                new_name = input("Enter new recipe name: ").strip()
+                if new_name:
+                    old_name = recipe['name']
+                    recipe['name'] = new_name
+                    print(f"Recipe renamed: '{old_name}' --> '{new_name}'")
+            # ---------------------------------------------------------------
+
+            # ----- added during bug fixes: show recipe preview -----
+            print(f"\n{'─'*60}")
+            print("RECIPE PREVIEW")
+            print("─"*60)
+            print(f"Name: {recipe['name']}")
+            print(f"Format: {recipe.get('format', 'unknown')}")
+            print(f"\nIngredients ({len(recipe['ingredients'])} items):")
+        
+            if recipe['ingredients']:
+                # Show first 3 ingredients
+                for i, ingredient in enumerate(recipe['ingredients'][:3], 1):
+                    print(f"  {i}. {ingredient}")
+            
+                # Show count of remaining
+                if len(recipe['ingredients']) > 3:
+                    remaining = len(recipe['ingredients']) - 3
+                    print(f"  ... and {remaining} more")
             else:
-                raise ValueError(f"Invalid file format")
-            print(f"Successfully parsed: {recipe['name']}")
+                print("     Warning: No ingredients found!")
+        
+            print(f"\nDirections preview:")
+            directions = recipe['directions']
+            if isinstance(directions, list):
+                print(f"  {len(directions)} steps")
+                if directions:
+                    print(f"  1. {directions[0][:80]}...")
+            else:
+                preview = directions[:100] if len(directions) > 100 else directions
+                print(f"  {preview}...")
+            # -------------------------------------------------------
+
+            # ----- added during bug fixes: confirmation -----
+            print(f"\n{'-'*60}")
+            confirm = input("Import this recipe? (y/n) : ").strip().lower()
+            if confirm == 'n':
+                print("Recipe import cancelled.")
+                return
+            # ------------------------------------------------
             
         except FileNotFoundError:
             print(f"File not found: {filepath}")
@@ -323,6 +376,36 @@ class CornucopiaApp:
             print(f"Error: {e}")
             return
         
+        # ------ added during bug fixes: fuzzy matching for partial name entry ------
+        if recipe is None: # trying to find partial matches
+            all_recipes = self.recipe_book.list_recipe_names()
+            matches = [r for r in all_recipes if recipe_name.lower() in r.lower()]
+            if not matches:
+                print(f"Recupe '{recipe_name}' not found.")
+                return
+            elif len(matches) == 1: # only one match; use it
+                recipe_name = matches[0]
+                recipe = self.recipe_book.get_recipe(recipe_name)
+                print(f"     Found: {recipe_name}")
+            else: # multiple matches; let user choose
+                print(f"\nMultiple matches found for '{recipe_name}':")
+                for i, match in enumerate(matches, 1):
+                    print(f"   {i}. {match}")
+                selection = input("\nSelect recipe number: ").strip()
+
+                try:
+                    idx = int(selection) - 1
+                    if 0 <= idx < len(matches):
+                        recipe_name = matches[idx]
+                        recipe = self.recipe_book.get_recipe(recipe_name)
+                    else:
+                        print("Invalid selection.")
+                        return
+                except ValueError:
+                    print("Please enter a number.")
+                    return
+        # ---------------------------------------------------------------------------
+        
         # Display recipe details
         print("\n" + "="*60)
         print(f"RECIPE: {recipe['name']}")
@@ -331,9 +414,9 @@ class CornucopiaApp:
         # Tags
         tags = recipe.get('tags', [])
         if tags:
-            print(f"\n🏷️  Tags: {', '.join(tags)}")
+            print(f"\n   Tags: {', '.join(tags)}")
         else:
-            print("\n🏷️  Tags: (none)")
+            print("\n   Tags: (none)")
         
         # Ingredients
         print(f"\nIngredients ({len(recipe['ingredients'])}):")
@@ -342,16 +425,26 @@ class CornucopiaApp:
         
         # Directions
         print(f"\nDirections:")
-        print(f"  {recipe['directions'][:200]}..." if len(recipe['directions']) > 200 else f"  {recipe['directions']}")
+        directions = recipe['directions']
+        if isinstance(directions, list):
+            for i, step in enumerate(directions, 1):
+                print(f"   {i}. {step}")
+        else: # display as text (truncate if it's super long)
+            if len(directions) > 200:
+                print(f"  {directions[:200]}...")
+            else:
+                print(f"   {directions}")
         
         # Tag management
         print("\n" + "─"*60)
         print("Tag Management:")
         print("1. Add tag")
         print("2. Remove tag")
-        print("3. Done")
+        #print("3. Edit recipe")
+        print("3. Delete this recipe")
+        print("4. Done")
         
-        choice = input("\nEnter choice (1-3): ").strip()
+        choice = input("\nEnter choice (1-5): ").strip()
         
         if choice == '1':
             new_tag = input("Enter tag to add: ").strip()
@@ -389,11 +482,36 @@ class CornucopiaApp:
                 print(f"Tag '{tag_to_remove}' removed from {recipe_name}")
             except Exception as e:
                 print(f"Error: {e}")
+        
+        #elif choice == '3': # added new recipe edit functionality in debugging
+            #self.edit_recipe_workflow(recipe_name, recipe)
+
+        elif choice == '3': # added delete option in debugging
+            print(f"   WARNING: This will permanently delete '{recipe_name}'")
+            confirm = input("Are you sure? (yes/no): ").strip().lower()
+            if confirm == 'yes':
+                try: 
+                    result = self.recipe_book.remove_recipe(recipe_name)
+                    if result: 
+                        print(f"Recpe '{recipe_name}' deleted successfully")
+                    else:
+                        print(f"Failed to delete recipe")
+                except Exception as e:
+                    print(f"Error deleting recipe: {e}")
+            else:
+                print("Deletion cancelled")
     
     # ═══════════════════════════════════════════════════════════════
     # CREATE SHOPPING LIST
     # ═══════════════════════════════════════════════════════════════
     
+    #def edit_recipe_workflow(self, recipe_name: str, recipe: Dict) -> None:
+        """Interactive recipe editing workflow for users
+        
+        Args:
+            recipe_name: Current recipe name
+            recipe: Recipe data dictionary
+        """
     def create_shopping_list_workflow(self) -> None:
         """Handle shopping list creation with multi-day meal planning."""
         print("\n" + "="*60)
@@ -539,26 +657,31 @@ class CornucopiaApp:
             for i, name in enumerate(available_recipes, 1):
                 selected_mark = "✓" if name in selected else " "
                 print(f"[{selected_mark}] {i}. {name}")
-            
-            selection = input("\nEnter recipe number to select (or 'done'): ").strip()
-            
+
+            # ----- added during bug fixes: multi-select recipes for a day w/ comma separation -----
+            print("\n Tip: Enter multiple numbers separated by commas (e.g., '1, 3, 5')")
+            selection = input("Enter recipe number(s) or 'done': ").strip()
             if selection.lower() == 'done':
                 continue
-            
-            try:
-                idx = int(selection) - 1
-                if 0 <= idx < len(available_recipes):
-                    recipe_name = available_recipes[idx]
-                    if recipe_name not in selected:
-                        selected.append(recipe_name)
-                        print(f"Added: {recipe_name}")
+
+            # split by comma and process each selection
+            selections = [s.strip() for s in selection.split(',')]
+
+            for sel in selections:
+                try:
+                    idx = int(sel) - 1
+                    if 0 <= idx < len(available_recipes):
+                        recipe_name = available_recipes[idx]
+                        if recipe_name not in selected:
+                            selected.append(recipe_name)
+                            print(f"     Added: {recipe_name}")
+                        else:
+                            print(f"     (Already selected: {recipe_name})")
                     else:
-                        print(f"  (Already selected: {recipe_name})")
-                else:
-                    print("Invalid recipe number.")
-            except ValueError:
-                print("Please enter a valid number.")
-        
+                        print(f"     Invalid recipe number: {sel}")
+                except ValueError:
+                    print(f"     Invalid input: {sel} (must be a number)")
+            # --------------------------------------------------------------------------------------
         return selected
     
     def get_servings_input(self, recipe_name: str) -> int:
